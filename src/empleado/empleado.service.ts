@@ -12,7 +12,7 @@ export class EmpleadoService {
   }
 
   async findAll(): Promise<Empleado[] | NotFoundException> {
-    return await this.empleadoTable.find().then(response => {
+    return await this.empleadoTable.find({ relations: { tipo_cargo: true } }).then(response => {
       if (response.length > 0) {
         return response;
       }
@@ -21,7 +21,7 @@ export class EmpleadoService {
   }
 
   async findOne(cedula: number): Promise<Empleado | Empleado[] | NotFoundException> {
-    return await this.empleadoTable.findBy({ cedula: cedula }).then(response => {
+    return await this.empleadoTable.find({ relations: { tipo_cargo: true }, where: { cedula: cedula } }).then(response => {
       if (response.length > 0) {
         return response;
       }
@@ -31,13 +31,13 @@ export class EmpleadoService {
 
   async update(empleado: empleadoDto) {
     let existe = await this.empleadoExiste(empleado.cedula);
-    if (existe) { return new NotFoundException(`No se encontro el empleado con la cedula ${empleado.cedula}`) }
+    if (!existe) { return new NotFoundException(`No se encontro el empleado con la cedula ${empleado.cedula}`) }
     return await this.empleadoTable.update({ cedula: empleado.cedula }, empleado);
   }
 
   async remove(cedula: number) {
     let existe = await this.empleadoExiste(cedula);
-    if (existe) { return new NotFoundException(`No se encontro el empleado con la cedula ${cedula}`) }
+    if (!existe) { return new NotFoundException(`No se encontro el empleado con la cedula ${cedula}`) }
     return await this.empleadoTable.delete({ cedula: cedula });
   }
 

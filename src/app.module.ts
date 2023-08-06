@@ -6,6 +6,10 @@ import { TipoCargoModule } from './tipo-cargo/tipo-cargo.module';
 import { TipoCargo } from './tipo-cargo/entities/tipo-cargo.entity';
 import { EmpleadoModule } from './empleado/empleado.module';
 import { Empleado } from './empleado/entities/empleado.entity';
+import { CategoriaModule } from './categoria/categoria.module';
+import { Categoria } from './categoria/entities/categoria.entity';
+import { ProductoModule } from './producto/producto.module';
+import { Producto } from './producto/entities/producto.entity';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -15,7 +19,7 @@ import { Empleado } from './empleado/entities/empleado.entity';
     username: 'engineersoft',
     password: 'adminengineer',
     database: 'facturacion',
-    entities: [TipoCargo, Empleado],
+    entities: [TipoCargo, Empleado, Categoria, Producto],
     synchronize: true,
     autoLoadEntities: true,
     ssl: {
@@ -23,7 +27,7 @@ import { Empleado } from './empleado/entities/empleado.entity';
     },
 
 
-  }), TipoCargoModule, EmpleadoModule],
+  }), TipoCargoModule, EmpleadoModule, CategoriaModule, ProductoModule],
   controllers: [AppController],
   providers: [AppService],
 })

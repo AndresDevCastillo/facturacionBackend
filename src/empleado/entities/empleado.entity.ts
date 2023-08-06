@@ -7,6 +7,7 @@ export class Empleado {
     cedula: number;
 
     @ManyToOne(() => TipoCargo, (tipoCargo) => tipoCargo.empleado)
+    @JoinColumn({ name: 'TipoCargo' })
     tipo_cargo: TipoCargo;
 
     @Column({ length: 65 })
