@@ -10,25 +10,30 @@ import { CategoriaModule } from './categoria/categoria.module';
 import { Categoria } from './categoria/entities/categoria.entity';
 import { ProductoModule } from './producto/producto.module';
 import { Producto } from './producto/entities/producto.entity';
+import 'dotenv/config';
 
 @Module({
-  imports: [TypeOrmModule.forRoot({
-    type: 'mysql',
-    host: 'database-facturacion.czonvdkvudeb.us-east-2.rds.amazonaws.com',
-    port: 3306,
-    username: 'engineersoft',
-    password: 'adminengineer',
-    database: 'facturacion',
-    entities: [TipoCargo, Empleado, Categoria, Producto],
-    synchronize: true,
-    autoLoadEntities: true,
-    ssl: {
-      "rejectUnauthorized": false
-    },
-
-
-  }), TipoCargoModule, EmpleadoModule, CategoriaModule, ProductoModule],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_DATABASE,
+      entities: [TipoCargo, Empleado, Categoria, Producto],
+      synchronize: true,
+      autoLoadEntities: true,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    }),
+    TipoCargoModule,
+    EmpleadoModule,
+    CategoriaModule,
+    ProductoModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
