@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe, Put } from '@nestjs/common';
 import { EmpleadoService } from './empleado.service';
 import { empleadoDto } from './dto/empleado.dto';
 
@@ -21,7 +21,7 @@ export class EmpleadoController {
     return this.empleadoService.findOne(+id);
   }
 
-  @Patch('/actualizar')
+  @Put('/actualizar')
   update(@Body() updateEmpleadoDto: empleadoDto) {
     return this.empleadoService.update(updateEmpleadoDto);
   }
