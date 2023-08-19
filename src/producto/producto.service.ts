@@ -1,50 +1,95 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateProductoDto } from './dto/create-producto.dto';
-import { UpdateProductoDto } from './dto/update-producto.dto';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateProductoDto, UpdateProductoDto } from './dto/producto.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Producto } from './entities/producto.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProductoService {
-  constructor(@InjectRepository(Producto) private productoTabla: Repository<Producto>) { }
+  constructor(@InjectRepository(Producto) private productoRepository: Repository<Producto>){}
 
   async create(createProductoDto: CreateProductoDto) {
-    return await this.productoTabla.insert(createProductoDto);
-  }
-
-  async findAll(): Promise<Producto[] | NotFoundException> {
-    return await this.productoTabla.find({ relations: { categoria: true } }).then((resp) => {
-      if (resp.length > 0) { return resp; }
-      return new NotFoundException(`No se encontraron productos`);
-    });
-  }
-
-  async findOne(id: number): Promise<Producto | NotFoundException> {
-    return await this.productoTabla.find({ where: { id: id }, relations: { categoria: true } }).then(resp => {
-      if (resp.length > 0) { return resp[0] }
-      return new NotFoundException(`No se encontro el producto con el id ${id}`);
-    });
-  }
-
-  async update(updateProductoDto: UpdateProductoDto) {
-    let existe = this.existeProducto(updateProductoDto.id);
-    if (existe) {
-      return await this.productoTabla.update({ id: updateProductoDto.id }, updateProductoDto)
+    try {
+      return await this.productoRepository.insert(createProductoDto);
+    } catch (error) {
+      return this.handleBDerrors(error);
     }
-    return new NotFoundException(`No se encontro el producto con el ${updateProductoDto.id}`)
+  }
+    
+  async findAll() {
+    try {
+      return await this.productoRepository.find({where: {estado: true}, select: {id: true, descripcion: true, nombre: true,}, relations: {categoria: true}}).then(resp => {
+        if(resp.length > 0 ) {return resp}
+        return new NotFoundException('No hay registrado ningun Producto');
+      });
+    }
+    catch (error) {
+      return this.handleBDerrors(error);
+    }
+  }
+
+  async findOne(id: number) {
+    try {
+      return await this.productoRepository.find({where: {estado: true, id: id}, select: {id: true, descripcion: true, nombre: true,}, relations: {categoria: true}}).then(resp => {
+        if (resp.length > 0) {return resp[0]}
+        return new NotFoundException('No se encontro el producto');
+      });
+    }
+    catch (error) {
+      return this.handleBDerrors(error);
+    }
+  }
+
+  async update(updateProductoDto) {
+    let existe = await this.checkIfExist(updateProductoDto.id);
+    if(existe) {
+      try {
+        await this.productoRepository.update(updateProductoDto.id, {estado: false});
+        delete updateProductoDto.id;
+        await this.create(updateProductoDto);
+        return {message: 'Se Actualizo con exito!', data: updateProductoDto};
+      }
+      catch (error) {
+        return this.handleBDerrors(error);
+      }
+    }
+    return new NotFoundException('No se encontró el producto por actualizar')
   }
 
   async remove(id: number) {
-    let existe = await this.existeProducto(id);
-    if (existe) { return await this.productoTabla.delete({ id: id }) }
-    return new NotFoundException(`No se encontro el producto con el ${id}`)
+    let existe = await this.checkIfExist(id);
+    if(existe) {
+     try {
+      await this.productoRepository.update(id, {estado: false});
+      return {message: 'Se elimino con exito!', id: id}; 
+     }
+     catch (error) {
+      this.handleBDerrors(error);
+     }
+    }
+    return new NotFoundException('No se encontro el producto a eliminar',)
   }
 
-  async existeProducto(id: number): Promise<boolean> {
-    return await this.productoTabla.find({ where: { id: id } }).then(resp => {
-      if (resp.length > 0) { return true; }
+  private async checkIfExist(id: number){
+    try {
+      const producto : any = await this.findOne(id);
+      if(producto.length > 0) {
+        return true;
+      }
       return false;
+    }
+    catch (error) {
+      this.handleBDerrors(error);
+    }
+   }
+
+
+   private handleBDerrors(error: any) {
+    console.log(error);
+    throw new HttpException('Por favor revise los logs del sistema', 500, {
+      cause: error
     })
   }
 }
+
+  

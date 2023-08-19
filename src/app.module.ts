@@ -2,14 +2,9 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TipoCargoModule } from './tipo-cargo/tipo-cargo.module';
-import { TipoCargo } from './tipo-cargo/entities/tipo-cargo.entity';
-import { EmpleadoModule } from './empleado/empleado.module';
-import { Empleado } from './empleado/entities/empleado.entity';
 import { CategoriaModule } from './categoria/categoria.module';
 import { Categoria } from './categoria/entities/categoria.entity';
 import { ProductoModule } from './producto/producto.module';
-import { Producto } from './producto/entities/producto.entity';
 import 'dotenv/config';
 
 @Module({
@@ -21,15 +16,13 @@ import 'dotenv/config';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_DATABASE,
-      entities: [TipoCargo, Empleado, Categoria, Producto],
+      entities: [ Categoria],
       synchronize: true,
       autoLoadEntities: true,
-      ssl: {
+     /*  ssl: {
         rejectUnauthorized: false,
-      },
+      }, */
     }),
-    TipoCargoModule,
-    EmpleadoModule,
     CategoriaModule,
     ProductoModule,
   ],
