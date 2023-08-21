@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriaModule } from './categoria/categoria.module';
 import { Categoria } from './categoria/entities/categoria.entity';
 import { ProductoModule } from './producto/producto.module';
+import { TipoCargoModule } from './tipo-cargo/tipo-cargo.module';
+import { EmpleadoModule } from './empleado/empleado.module';
 import 'dotenv/config';
 
 @Module({
@@ -25,6 +27,8 @@ import 'dotenv/config';
     }),
     CategoriaModule,
     ProductoModule,
+    TipoCargoModule,
+    EmpleadoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
