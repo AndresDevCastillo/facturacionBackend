@@ -17,7 +17,6 @@ export class UpdateCategoriaDto {
 
     @IsNumber()
     @IsNotEmpty()
-    @Matches(/^(?!\s*$).+/, { message: 'El id no puede estar vacío' })
     readonly id: number;
 
     @IsString()
