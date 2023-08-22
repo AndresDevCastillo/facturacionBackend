@@ -189,7 +189,13 @@ export class EmpleadoService {
         return empleado == null || empleado.length == 0 ? false : true;
       });
   }
-
+  async existEmpleadosByTipoCargo(id_tipo: number): Promise<boolean | any> {
+    return await this.empleadoRepository
+      .findAndCountBy({ cedula: id_tipo })
+      .then((cantEmpleados) => {
+        return cantEmpleados;
+      });
+  }
   private handleBDerrors(error: any) {
     console.log(error);
     throw new HttpException('Por favor revise los logs del sistema', 500, {

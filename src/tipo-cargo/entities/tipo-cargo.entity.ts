@@ -9,7 +9,7 @@ export class TipoCargo {
   @Column({ type: 'varchar', length: 40 })
   cargo: string;
 
-  @Column({ type: 'boolean', default: true })
+  @Column({ type: 'boolean', default: true, select: false })
   estado: boolean;
 
   @OneToMany(() => Empleado, (empleado) => empleado.tipoCargo)

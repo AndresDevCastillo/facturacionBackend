@@ -8,12 +8,15 @@ import { CreateTipoCargoDto, UpdateTipoCargoDto } from './dto/tipo-cargo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TipoCargo } from './entities/tipo-cargo.entity';
 import { Repository } from 'typeorm';
+import { Empleado } from 'src/empleado/entities/empleado.entity';
 
 @Injectable()
 export class TipoCargoService {
   constructor(
     @InjectRepository(TipoCargo)
     private tipoCargoRepository: Repository<TipoCargo>,
+    @InjectRepository(Empleado)
+    private empleadoRepository: Repository<Empleado>,
   ) {}
   async create(createTipoCargoDto: CreateTipoCargoDto) {
     const existTipoCargo = await this.checkIfExistByCargo(
@@ -98,16 +101,26 @@ export class TipoCargoService {
   }
 
   async remove(id: number) {
-    const existTipoCargo = await this.checkIfExistById(id);
-    if (existTipoCargo) {
-      try {
-        await this.tipoCargoRepository.update(id, { estado: false });
-        return { message: 'Se eliminó con éxito', id: id };
-      } catch (error) {
-        return this.handleBDerrors(error);
+    const existEmpleados = await this.empleadoRepository.find({
+      where: { tipoCargo: { id: id }, estado: true },
+    });
+    if (existEmpleados.length == 0) {
+      const existTipoCargo = await this.checkIfExistById(id);
+      if (existTipoCargo) {
+        try {
+          await this.tipoCargoRepository.update(id, { estado: false });
+          return { message: 'Se eliminó con éxito', id: id };
+        } catch (error) {
+          return this.handleBDerrors(error);
+        }
       }
+      return new NotFoundException(
+        'No se encontró el tipo de cargo a eliminar',
+      );
     }
-    return new NotFoundException('No se encontró el tipo de cargo a eliminar');
+    return new ConflictException(
+      'No se puede eliminar el cargo, hay empleados asociados',
+    );
   }
 
   private async checkIfExistByCargo(cargo: string): Promise<boolean | void> {
