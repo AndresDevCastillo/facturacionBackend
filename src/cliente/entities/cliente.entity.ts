@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Factura } from 'src/factura/entities/factura.entity';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Cliente {
@@ -19,4 +26,7 @@ export class Cliente {
 
   @Column({ type: 'boolean', default: true })
   estado: boolean;
+
+  @OneToMany(() => Factura, (factura) => factura.cliente)
+  factura: Factura[];
 }

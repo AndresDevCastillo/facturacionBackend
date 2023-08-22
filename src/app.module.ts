@@ -10,6 +10,7 @@ import { MesaModule } from './mesa/mesa.module';
 import { TipoCargoModule } from './tipo-cargo/tipo-cargo.module';
 import { EmpleadoModule } from './empleado/empleado.module';
 import 'dotenv/config';
+import { FacturaModule } from './factura/factura.module';
 
 @Module({
   imports: [
@@ -20,7 +21,6 @@ import 'dotenv/config';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_DATABASE,
-      entities: [Categoria],
       synchronize: true,
       autoLoadEntities: true,
       /*  ssl: {
@@ -33,6 +33,7 @@ import 'dotenv/config';
     MesaModule,
     TipoCargoModule,
     EmpleadoModule,
+    FacturaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
