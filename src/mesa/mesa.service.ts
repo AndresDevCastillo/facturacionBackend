@@ -1,5 +1,9 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateMesaDto, UpdateMesaDto } from './dto/mesa.dto';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateMesaDto } from './dto/mesa.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Mesa } from './entities/mesa.entity';
 import { Repository } from 'typeorm';
@@ -18,23 +22,74 @@ export class MesaService {
     }
   }
 
-  findAll() {
-    return `This action returns all mesa`;
+  async findAll() {
+    try {
+      return await this.mesaRepository
+        .find({ where: { estado: true } })
+        .then((resp) => {
+          if (resp.length > 0) {
+            return resp;
+          }
+          return new NotFoundException('No hay mesas resgitradas');
+        });
+    } catch (error) {
+      this.handleBDerrors(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} mesa`;
+  async findOne(id: number) {
+    try {
+      return await this.mesaRepository
+        .find({ where: { estado: true, id: id } })
+        .then((resp) => {
+          if (resp.length > 0) {
+            return resp[0];
+          }
+          return new NotFoundException(
+            `No se encontro la mesa con el id ${id}`,
+          );
+        });
+    } catch (error) {
+      this.handleBDerrors(error);
+    }
   }
 
-  update(updateMesaDto: UpdateMesaDto) {
-    return `This action updates a # mesa`;
+  async update(updateMesaDto) {
+    try {
+      let existe = await this.checkIfExist(updateMesaDto.id);
+      if (existe) {
+        await this.remove(updateMesaDto.id);
+        delete updateMesaDto.id;
+        return await this.create(updateMesaDto);
+      }
+      return new NotFoundException('No se encontro la mesa a actualizar');
+    } catch (error) {
+      this.handleBDerrors(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} mesa`;
+  async remove(id: number) {
+    try {
+      let existe = await this.checkIfExist(id);
+      if (existe) {
+        return await this.mesaRepository.update({ id: id }, { estado: false });
+      }
+      return new NotFoundException('No se encontro la mesa a eliminar');
+    } catch (error) {
+      this.handleBDerrors(error);
+    }
   }
+
   private async checkIfExist(id: number) {
     try {
+      return await this.mesaRepository
+        .find({ where: { id: id, estado: true } })
+        .then((resp) => {
+          if (resp.length > 0) {
+            return true;
+          }
+          return false;
+        });
     } catch (error) {
       this.handleBDerrors(error);
     }

@@ -7,6 +7,8 @@ import { Categoria } from './categoria/entities/categoria.entity';
 import { ProductoModule } from './producto/producto.module';
 import { ClienteModule } from './cliente/cliente.module';
 import { MesaModule } from './mesa/mesa.module';
+import { TipoCargoModule } from './tipo-cargo/tipo-cargo.module';
+import { EmpleadoModule } from './empleado/empleado.module';
 import 'dotenv/config';
 
 @Module({
@@ -18,10 +20,10 @@ import 'dotenv/config';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_DATABASE,
-      entities: [ Categoria],
+      entities: [Categoria],
       synchronize: true,
       autoLoadEntities: true,
-     /*  ssl: {
+      /*  ssl: {
         rejectUnauthorized: false,
       }, */
     }),
@@ -29,6 +31,8 @@ import 'dotenv/config';
     ProductoModule,
     ClienteModule,
     MesaModule,
+    TipoCargoModule,
+    EmpleadoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

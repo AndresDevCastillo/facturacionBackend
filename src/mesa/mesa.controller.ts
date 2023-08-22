@@ -30,7 +30,7 @@ export class MesaController {
     return this.mesaService.findOne(id);
   }
 
-  @Put('/actulizar')
+  @Put('/actualizar')
   update(@Body() updateMesaDto: UpdateMesaDto) {
     return this.mesaService.update(updateMesaDto);
   }

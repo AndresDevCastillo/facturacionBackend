@@ -8,6 +8,6 @@ export class Mesa {
   @Column({ type: 'varchar', length: 65 })
   nombre: string;
 
-  @Column({ type: 'boolean', default: true })
+  @Column({ type: 'boolean', default: true, select: false })
   estado: boolean;
 }

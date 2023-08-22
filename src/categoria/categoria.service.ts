@@ -18,10 +18,7 @@ export class CategoriaService {
     try {
       return await this.categoriaTabla.insert(createCategoriaDto);
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(
-        'Por favor revisa los logs del sistema',
-      );
+      this.handleBDerrors(error);
     }
   }
 
@@ -45,10 +42,7 @@ export class CategoriaService {
           return new NotFoundException('No se encontraron categorias');
         });
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(
-        'Por favor revisa los logs del sistema',
-      );
+      this.handleBDerrors(error);
     }
   }
 
@@ -72,28 +66,33 @@ export class CategoriaService {
           );
         });
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(
-        'Por favor revisa los logs del sistema',
-      );
+      this.handleBDerrors(error);
     }
   }
 
   async update(updateCategoriaDto: UpdateCategoriaDto) {
-    let nuevaCategoria = { ...updateCategoriaDto };
-    await this.remove(nuevaCategoria.id);
-    delete nuevaCategoria.id;
-    return await this.create(nuevaCategoria);
+    try {
+      let nuevaCategoria = { ...updateCategoriaDto };
+      await this.remove(nuevaCategoria.id);
+      delete nuevaCategoria.id;
+      return await this.create(nuevaCategoria);
+    } catch (error) {
+      this.handleBDerrors(error);
+    }
   }
 
   async remove(id: number) {
-    let existe = await this.ExisteCategoria(id);
-    if (existe) {
-      return await this.categoriaTabla.update(id, { estado: false });
+    try {
+      let existe = await this.ExisteCategoria(id);
+      if (existe) {
+        return await this.categoriaTabla.update(id, { estado: false });
+      }
+      return new NotFoundException(
+        `No se encontro la categoria con el id  ${id}`,
+      );
+    } catch (error) {
+      this.handleBDerrors(error);
     }
-    return new NotFoundException(
-      `No se encontro la categoria con el id  ${id}`,
-    );
   }
 
   async ExisteCategoria(id: number) {
@@ -107,10 +106,11 @@ export class CategoriaService {
           return false;
         });
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException(
-        'Por favor revisa los logs del sistema',
-      );
+      this.handleBDerrors(error);
     }
+  }
+  private handleBDerrors(error: any) {
+    console.log(error);
+    throw new InternalServerErrorException('Revise los Logs del sistema');
   }
 }
