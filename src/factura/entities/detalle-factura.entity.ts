@@ -8,10 +8,13 @@ export class DetalleFactura {
   @PrimaryGeneratedColumn()
   facturaToProductos: number;
 
-  @ManyToOne(() => Factura, (factura) => factura.detalleFactura)
+  @ManyToOne(() => Factura, (factura) => factura.detalleFactura, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   factura: Factura;
 
-  @ManyToOne(() => Producto, (producto) => producto.detalleFactura)
+  @ManyToOne(() => Producto, (producto) => producto.detalleFactura, {})
   producto: Producto;
 
   @Column({ type: 'int' })

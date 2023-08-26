@@ -30,8 +30,6 @@ export class Factura {
   @Column({ type: 'float' })
   descuento: number;
 
-  @OneToMany(() => DetalleFactura, (detalleFactura) => detalleFactura.factura, {
-    cascade: true,
-  })
+  @OneToMany(() => DetalleFactura, (detalleFactura) => detalleFactura.factura)
   detalleFactura: DetalleFactura[];
 }

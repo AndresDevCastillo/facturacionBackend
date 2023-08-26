@@ -1,20 +1,28 @@
-import { IsNotEmpty, IsNumber, IsString, Matches } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Matches,
+} from 'class-validator';
 import { Cliente } from 'src/cliente/entities/cliente.entity';
 import { Empleado } from 'src/empleado/entities/empleado.entity';
 import { Mesa } from 'src/mesa/entities/mesa.entity';
+import { Producto } from 'src/producto/entities/producto.entity';
+import { CreateDateColumn } from 'typeorm';
 
 export class FacturaDto {
   @IsNumber()
   @IsNotEmpty()
-  cedula_cliente: Cliente;
+  cliente: Cliente;
 
   @IsNumber()
   @IsNotEmpty()
-  cedula_empleado: Empleado;
+  empleado: Empleado;
 
   @IsNumber()
   @IsNotEmpty()
-  id_mesa: Mesa;
+  mesa: Mesa;
 
   @IsString()
   @IsNotEmpty()
@@ -24,4 +32,24 @@ export class FacturaDto {
   @IsNumber()
   @IsNotEmpty()
   descuento: number;
+
+  @CreateDateColumn()
+  creacion: Date;
+
+  @IsArray()
+  detalleFactura: detalleFactura[];
+}
+
+export class detalleFactura {
+  @IsNumber()
+  @IsNotEmpty()
+  producto: Producto;
+
+  @IsNumber()
+  @IsNotEmpty()
+  cantidad: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  precio_unitario: number;
 }
