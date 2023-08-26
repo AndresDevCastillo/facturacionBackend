@@ -1,5 +1,6 @@
 import { Categoria } from 'src/categoria/entities/categoria.entity';
 import { DetalleFactura } from 'src/factura/entities/detalle-factura.entity';
+import { DetalleTicket } from 'src/pedido/entities/detalle-ticket.entity';
 import {
   Column,
   Entity,
@@ -27,4 +28,6 @@ export class Producto {
 
   @OneToMany(() => DetalleFactura, (detalleFactura) => detalleFactura.factura)
   detalleFactura: DetalleFactura[];
+  @OneToMany(() => DetalleTicket, (detalleTicket) => detalleTicket.producto)
+  detalleTicket: DetalleTicket;
 }

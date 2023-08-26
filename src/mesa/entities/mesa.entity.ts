@@ -1,4 +1,5 @@
 import { Factura } from 'src/factura/entities/factura.entity';
+import { Pedido } from 'src/pedido/entities/pedido.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -14,4 +15,6 @@ export class Mesa {
 
   @OneToMany(() => Factura, (factura) => factura.mesa)
   factura: Factura[];
+  @OneToMany(() => Pedido, (Pedido) => Pedido.mesa)
+  pedido: Pedido;
 }
