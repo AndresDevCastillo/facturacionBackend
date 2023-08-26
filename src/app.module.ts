@@ -9,6 +9,7 @@ import { ClienteModule } from './cliente/cliente.module';
 import { MesaModule } from './mesa/mesa.module';
 import { TipoCargoModule } from './tipo-cargo/tipo-cargo.module';
 import { EmpleadoModule } from './empleado/empleado.module';
+import { PedidoModule } from './pedido/pedido.module';
 import 'dotenv/config';
 
 @Module({
@@ -33,6 +34,7 @@ import 'dotenv/config';
     MesaModule,
     TipoCargoModule,
     EmpleadoModule,
+    PedidoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,6 @@
+import { Pedido } from 'src/pedido/entities/pedido.entity';
 import { TipoCargo } from 'src/tipo-cargo/entities/tipo-cargo.entity';
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Empleado {
@@ -20,4 +21,7 @@ export class Empleado {
 
   @ManyToOne(() => TipoCargo, (tipoCargo) => tipoCargo.empleado)
   tipoCargo: TipoCargo;
+
+  @OneToMany(() => Pedido, (Pedido) => Pedido.empleado)
+  pedido: Pedido;
 }
