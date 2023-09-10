@@ -39,9 +39,10 @@ export class CreateEmpleadoDto {
 }
 
 export class UpdateEmpleadoDto {
-  @IsNumber()
-  @IsNotEmpty()
-  readonly cedula_act: number; //Cédula del empleado
+
+   @IsNumber()
+   @IsNotEmpty()
+   readonly id: number;
 
   @IsNumber()
   @IsNotEmpty()

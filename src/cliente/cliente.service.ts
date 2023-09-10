@@ -35,7 +35,7 @@ export class ClienteService {
       return await this.clienteRepository
         .find({
           where: { estado: true },
-          select: { cedula: true, correo: true, nombre: true, telefono: true },
+          select: { cedula: true, correo: true, nombre: true, telefono: true , id: true},
         })
         .then((resp) => {
           if (resp.length > 0) {

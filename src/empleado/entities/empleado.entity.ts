@@ -1,11 +1,15 @@
 import { Factura } from 'src/factura/entities/factura.entity';
 import { Pedido } from 'src/pedido/entities/pedido.entity';
 import { TipoCargo } from 'src/tipo-cargo/entities/tipo-cargo.entity';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Empleado {
-  @PrimaryColumn()
+
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
   cedula: number;
 
   @Column({ type: 'varchar', length: 65 })

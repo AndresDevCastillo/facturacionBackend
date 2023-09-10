@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriaModule } from './categoria/categoria.module';
-import { Categoria } from './categoria/entities/categoria.entity';
 import { ProductoModule } from './producto/producto.module';
 import { ClienteModule } from './cliente/cliente.module';
 import { MesaModule } from './mesa/mesa.module';

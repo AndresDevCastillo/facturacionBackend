@@ -24,7 +24,7 @@ export class ProductoService {
       return await this.productoRepository
         .find({
           where: { estado: true },
-          select: { id: true, descripcion: true, nombre: true },
+          select: { id: true, descripcion: true, nombre: true , precio: true},
           relations: { categoria: true },
         })
         .then((resp) => {
