@@ -4,6 +4,7 @@ import { Mesa } from 'src/mesa/entities/mesa.entity';
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -30,6 +31,9 @@ export class Factura {
   @Column({ type: 'float' })
   descuento: number;
 
-  @OneToMany(() => DetalleFactura, (detalleFactura) => detalleFactura.factura)
+  @OneToMany(() => DetalleFactura, (detalleFactura) => detalleFactura.factura ,  {
+  eager: true,
+  })
+  @JoinTable()
   detalleFactura: DetalleFactura[];
 }

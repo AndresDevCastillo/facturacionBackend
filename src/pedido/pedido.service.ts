@@ -22,7 +22,6 @@ export class PedidoService {
               pedido: pedido.raw.insertId,
               producto: detalle.producto,
               cantidad: detalle.cantidad,
-              precio_unitario: detalle.precio_unitario,
             };
           });
           const gDetalleP = await this.detallePedidoRepository

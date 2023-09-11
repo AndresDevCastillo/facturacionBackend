@@ -49,7 +49,4 @@ export class detalleFactura {
   @IsNotEmpty()
   cantidad: number;
 
-  @IsNumber()
-  @IsNotEmpty()
-  precio_unitario: number;
 }

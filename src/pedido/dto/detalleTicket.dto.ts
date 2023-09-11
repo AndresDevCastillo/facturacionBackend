@@ -13,7 +13,4 @@ export class DetalleTicketDto {
   @IsNumber()
   readonly cantidad: number;
 
-  @IsNotEmpty()
-  @IsNumber()
-  readonly precio_unitario: number;
 }
