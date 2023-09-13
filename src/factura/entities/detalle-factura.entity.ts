@@ -1,5 +1,5 @@
 import { Empleado } from 'src/empleado/entities/empleado.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Factura } from './factura.entity';
 import { Producto } from 'src/producto/entities/producto.entity';
 
@@ -9,17 +9,22 @@ export class DetalleFactura {
   facturaToProductos: number;
 
   @ManyToOne(() => Factura, (factura) => factura.detalleFactura, {
+    
     cascade: true,
     onDelete: 'CASCADE',
   })
+  @JoinTable()
   factura: Factura;
 
-  @ManyToOne(() => Producto, (producto) => producto.detalleFactura, {})
+  @ManyToOne(() => Producto, (producto) => producto.detalleFactura, {
+    cascade: true,
+    eager: true
+    
+  })
+  @JoinTable()
   producto: Producto;
 
   @Column({ type: 'int' })
   cantidad: number;
 
-  @Column({ type: 'int' })
-  precio_unitario: number;
 }

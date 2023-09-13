@@ -3,6 +3,7 @@ import { Mesa } from 'src/mesa/entities/mesa.entity';
 import {
   CreateDateColumn,
   Entity,
+  JoinTable,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -21,7 +22,8 @@ export class Pedido {
   empleado: Empleado;
 
   @OneToMany(() => DetalleTicket, (detalleTicket) => detalleTicket.pedido)
-  detalleTicket: DetalleTicket;
+  @JoinTable()
+  detalleTicket: DetalleTicket[];
   
   @CreateDateColumn()
   fecha: Date;

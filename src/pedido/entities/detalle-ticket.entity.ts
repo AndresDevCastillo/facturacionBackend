@@ -10,12 +10,12 @@ export class DetalleTicket {
   @ManyToOne(() => Pedido, (pedido) => pedido.detalleTicket)
   pedido: Pedido;
 
-  @ManyToOne(() => Producto, (producto) => producto.detalleTicket)
+  @ManyToOne(() => Producto, (producto) => producto.detalleTicket, {
+    eager: true
+  })
   producto: Producto;
 
   @Column()
   cantidad: number;
 
-  @Column()
-  precio_unitario: number;
 }

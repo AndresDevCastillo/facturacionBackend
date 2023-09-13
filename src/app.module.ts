@@ -23,9 +23,9 @@ import { FacturaModule } from './factura/factura.module';
       database: process.env.DB_DATABASE,
       synchronize: true,
       autoLoadEntities: true,
-      ssl: {
+      /* ssl: {
         rejectUnauthorized: false,
-      },
+      }, */
     }),
     CategoriaModule,
     ProductoModule,

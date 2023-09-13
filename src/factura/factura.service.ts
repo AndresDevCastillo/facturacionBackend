@@ -44,7 +44,9 @@ export class FacturaService {
       return await this.facturaRepository
         .find({
           where: { codigo: id },
-          relations: { detalleFactura: true },
+          relations: { detalleFactura: true , empleado: true , cliente: true, mesa: true },
+        
+
         })
         .then((resp) => {
           if (resp.length > 0) {

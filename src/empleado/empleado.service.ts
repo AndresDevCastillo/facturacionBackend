@@ -40,7 +40,8 @@ export class EmpleadoService {
       return await this.empleadoRepository
         .find({
           where: { estado: true },
-          select: { cedula: true, nombre: true, telefono: true, id: true },
+          select: { cedula: true, nombre: true, telefono: true, id: true , direccion: true},
+          relations: {tipoCargo: true}
         })
         .then((resp) => {
           if (resp.length > 0) {
