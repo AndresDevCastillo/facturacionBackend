@@ -102,4 +102,13 @@ export class PedidoService {
       };
     }
   }
+  async getMesasConPedidos() {
+    return await this.pedidoRepository
+      .find({ relations: { mesa: true }, select: { mesa: { id: true } } })
+      .then((pedidos) => {
+        return pedidos.map((pedido) => {
+          return pedido.mesa.id;
+        });
+      });
+  }
 }
