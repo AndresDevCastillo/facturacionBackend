@@ -29,6 +29,6 @@ export class Empleado {
 
   @OneToMany(() => Factura, (factura) => factura.empleado)
   factura: Factura[];
-  @OneToMany(() => Pedido, (Pedido) => Pedido.empleado)
-  pedido: Pedido;
+  /* @OneToMany(() => Pedido, (Pedido) => Pedido.empleado)
+  pedido: Pedido; */
 }

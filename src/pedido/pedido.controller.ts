@@ -19,15 +19,19 @@ export class PedidoController {
   async create(@Body() createPedidoDto: CreatePedidoDto) {
     return await this.pedidoService.create(createPedidoDto);
   }
-
-  @Get()
-  async findAll() {
-    return await this.pedidoService.findAll();
+  @Get('/mesas')
+  async getMesasConPedidos() {
+    return await this.pedidoService.getMesasConPedidos();
   }
 
   @Get('/:id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.pedidoService.findOne(id);
+  }
+
+  @Get()
+  async findAll() {
+    return await this.pedidoService.findAll();
   }
 
   @Put()
