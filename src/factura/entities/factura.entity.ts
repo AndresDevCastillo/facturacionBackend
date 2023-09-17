@@ -56,16 +56,5 @@ export class Factura {
   @Column({ type: 'time' }) // Columna para la hora
   hora: string;
 
-  @BeforeInsert()
-  async setFechaYHora() {
-    console.log('LLego a setFechaYHora')
-    const colombiaTimezone = 'America/Bogota';
-    const now = new Date();
-
-    const { DateTime } = require('luxon');
-    const colombiaDateTime = DateTime.fromJSDate(now, { zone: colombiaTimezone });
-
-    this.fecha = colombiaDateTime.toJSDate();
-    this.hora = colombiaDateTime.toFormat('HH:mm:ss');
-  }
+  
 }

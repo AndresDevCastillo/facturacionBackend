@@ -89,9 +89,6 @@ export class PedidoService {
 
   async remove(id_pedido: number) {
     try {
-      await this.detallePedidoRepository.delete({
-        pedido: { ticket: id_pedido },
-      });
       await this.pedidoRepository.delete({ ticket: id_pedido });
       return {
         msg: 'Registros eliminados, detalle de pedido y el pedido',

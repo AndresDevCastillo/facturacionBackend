@@ -7,7 +7,10 @@ export class DetalleTicket {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Pedido, (pedido) => pedido.detalleTicket)
+  @ManyToOne(() => Pedido, (pedido) => pedido.detalleTicket, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   pedido: Pedido;
 
   @ManyToOne(() => Producto, (producto) => producto.detalleTicket, {

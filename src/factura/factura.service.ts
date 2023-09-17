@@ -4,6 +4,7 @@ import { Factura } from './entities/factura.entity';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { DetalleFactura } from './entities/detalle-factura.entity';
 import { FacturaDto } from './dto/factura.dto';
+import { Pedido } from 'src/pedido/entities/pedido.entity';
 
 @Injectable()
 export class FacturaService {
@@ -11,6 +12,8 @@ export class FacturaService {
     @InjectRepository(Factura) private facturaRepository: Repository<Factura>,
     @InjectRepository(DetalleFactura)
     private detalleFacturaRepository: Repository<DetalleFactura>,
+    @InjectRepository(Pedido)
+    private pedidoRepository: Repository<Pedido>
   ) {}
   async findAll() {
     return await this.facturaRepository.find({
@@ -23,7 +26,7 @@ export class FacturaService {
 
 
 
-  async create(createFacturaDto: FacturaDto) {
+  async create(createFacturaDto: FacturaDto, idPedido: number) {
 
     const colombiaTimezone = 'America/Bogota';
     const now = new Date();
@@ -48,7 +51,8 @@ export class FacturaService {
             obj.factura = codigo;
             return obj;
           });
-
+          
+          await this.pedidoRepository.delete(idPedido);
           return await this.detalleFacturaRepository
             .insert(detalleFactura)
             .then(async () => {
