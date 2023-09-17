@@ -18,13 +18,13 @@ export class Pedido {
   @ManyToOne(() => Mesa, (mesa) => mesa.pedido)
   mesa: Mesa;
 
-  /* @ManyToOne(() => Empleado, (empleado) => empleado.pedido)
-  empleado: Empleado; */
+  @ManyToOne(() => Empleado, (empleado) => empleado.pedido)
+  empleado: Empleado;
 
   @OneToMany(() => DetalleTicket, (detalleTicket) => detalleTicket.pedido)
   @JoinTable()
   detalleTicket: DetalleTicket[];
-  
+
   @CreateDateColumn()
   fecha: Date;
 }

@@ -55,6 +55,7 @@ export class PedidoService {
         relations: {
           detalleTicket: true,
           mesa: true,
+          empleado: true,
         },
         order: {
           ticket: 'ASC',

@@ -7,8 +7,8 @@ export class CreatePedidoDto {
   @IsNotEmpty()
   readonly mesa: Mesa;
 
-  /* @IsNotEmpty()
-  readonly empleado: Empleado; */
+  @IsNotEmpty()
+  readonly empleado: Empleado;
 
   @IsArray()
   readonly detallePedido: DetalleTicketDto[];

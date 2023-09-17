@@ -1,11 +1,16 @@
 import { Factura } from 'src/factura/entities/factura.entity';
 import { Pedido } from 'src/pedido/entities/pedido.entity';
 import { TipoCargo } from 'src/tipo-cargo/entities/tipo-cargo.entity';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Empleado {
-
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -29,6 +34,6 @@ export class Empleado {
 
   @OneToMany(() => Factura, (factura) => factura.empleado)
   factura: Factura[];
-  /* @OneToMany(() => Pedido, (Pedido) => Pedido.empleado)
-  pedido: Pedido; */
+  @OneToMany(() => Pedido, (Pedido) => Pedido.empleado)
+  pedido: Pedido;
 }
