@@ -36,8 +36,22 @@ export class FacturaDto {
   @CreateDateColumn()
   creacion: Date;
 
+  @IsNumber()
+  @IsNotEmpty()
+  total: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  propina: number;
+
+  @IsString()
+  @IsNotEmpty()
+  lugar: string;
+
   @IsArray()
   detalleFactura: detalleFactura[];
+
+
 }
 
 export class detalleFactura {

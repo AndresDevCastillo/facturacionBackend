@@ -54,6 +54,8 @@ export class PedidoService {
       return await this.pedidoRepository.find({
         relations: {
           detalleTicket: true,
+          empleado: true,
+          mesa: true,
         },
         order: {
           ticket: 'ASC',

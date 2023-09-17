@@ -15,7 +15,11 @@ import { FacturaDto } from './dto/factura.dto';
 export class FacturaController {
   constructor(private readonly facturaService: FacturaService) {}
 
-  @Post()
+  @Get() 
+  findAll() {
+    return this.facturaService.findAll();
+  }
+  @Post('/crear')
   create(@Body() createFacturaDto: FacturaDto) {
     return this.facturaService.create(createFacturaDto);
   }
