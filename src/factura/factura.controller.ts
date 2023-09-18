@@ -19,9 +19,9 @@ export class FacturaController {
   findAll() {
     return this.facturaService.findAll();
   }
-  @Post('/crear')
-  create(@Body() createFacturaDto: FacturaDto) {
-    return this.facturaService.create(createFacturaDto);
+  @Post('/crear/:pedido')
+  create(@Body() createFacturaDto: FacturaDto, @Param('pedido', ParseIntPipe) idPedido: number) {
+    return this.facturaService.create(createFacturaDto, idPedido);
   }
 
   @Get('/:id')
