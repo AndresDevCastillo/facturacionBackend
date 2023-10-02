@@ -34,6 +34,9 @@ export class Factura {
   @Column({ type: 'int' })
   descuento: number;
 
+  @Column({ type: 'int' })
+  neto: number;
+
   @Column({ type: 'integer'})
   total: number;
 

@@ -42,6 +42,10 @@ export class FacturaDto {
 
   @IsNumber()
   @IsNotEmpty()
+  neto: number;
+
+  @IsNumber()
+  @IsNotEmpty()
   propina: number;
 
   @IsString()
