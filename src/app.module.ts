@@ -9,11 +9,16 @@ import { MesaModule } from './mesa/mesa.module';
 import { TipoCargoModule } from './tipo-cargo/tipo-cargo.module';
 import { EmpleadoModule } from './empleado/empleado.module';
 import { PedidoModule } from './pedido/pedido.module';
-import 'dotenv/config';
 import { FacturaModule } from './factura/factura.module';
+import { UsuarioModule } from './usuario/usuario.module';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
+import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -35,6 +40,9 @@ import { FacturaModule } from './factura/factura.module';
     EmpleadoModule,
     FacturaModule,
     PedidoModule,
+    UsuarioModule,
+    AuthModule,
+    JwtModule,
   ],
   controllers: [AppController],
   providers: [AppService],

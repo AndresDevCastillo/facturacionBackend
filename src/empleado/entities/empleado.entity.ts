@@ -29,7 +29,9 @@ export class Empleado {
   @Column({ type: 'boolean', default: true })
   estado: boolean;
 
-  @ManyToOne(() => TipoCargo, (tipoCargo) => tipoCargo.empleado)
+  @ManyToOne(() => TipoCargo, (tipoCargo) => tipoCargo.empleado, {
+    eager: true,
+  })
   tipoCargo: TipoCargo;
 
   @OneToMany(() => Factura, (factura) => factura.empleado)
