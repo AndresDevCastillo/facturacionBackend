@@ -1,24 +1,19 @@
 import {
   BadRequestException,
-  ConflictException,
   HttpException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateEmpleadoDto, UpdateEmpleadoDto } from './dto/empleado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Empleado } from './entities/empleado.entity';
-import { DataSource, Not, Repository } from 'typeorm';
-import { TipoCargoService } from 'src/tipo-cargo/tipo-cargo.service';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class EmpleadoService {
   constructor(
-    private dataSource: DataSource,
     @InjectRepository(Empleado)
     private empleadoRepository: Repository<Empleado>,
-    @Inject(TipoCargoService) private tipoCargoService: TipoCargoService,
   ) {}
 
   async create(empleado: CreateEmpleadoDto) {
@@ -38,12 +33,16 @@ export class EmpleadoService {
 
   async findAll() {
     try {
-      return await this.dataSource
-        .getRepository(Empleado)
+      return await this.empleadoRepository
         .find({
-          where: { tipoCargo: { cargo: Not('Engineersoft') } },
-          select: ['id', 'cedula', 'nombre', 'telefono', 'direccion'],
-          relations: { tipoCargo: true },
+          where: { estado: true },
+          select: {
+            cedula: true,
+            nombre: true,
+            telefono: true,
+            id: true,
+            direccion: true,
+          },
         })
         .then((empleados) => {
           return empleados.length > 0
@@ -53,6 +52,10 @@ export class EmpleadoService {
     } catch (error) {
       return this.handleBDerrors(error);
     }
+  }
+  async getCargos() {
+    const cargos = ['Mesero', 'Cajero', 'Admin', 'Engineersoft'];
+    return cargos;
   }
 
   async findOne(cedula: number) {

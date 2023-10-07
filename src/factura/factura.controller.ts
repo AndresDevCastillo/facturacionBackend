@@ -16,21 +16,27 @@ export class FacturaController {
   constructor(private readonly facturaService: FacturaService) {}
 
   @Get() 
-  findAll() {
-    return this.facturaService.findAll();
+  async findAll() {
+    return await this.facturaService.findAll();
   }
+  @Get('Estadisticas/year/:year')
+  async estadisticasYear(@Param('year') year: number) {
+    return await this.facturaService.estadisticasYear(year);
+  }
+
   @Post('/crear/:pedido')
-  create(@Body() createFacturaDto: FacturaDto, @Param('pedido', ParseIntPipe) idPedido: number) {
-    return this.facturaService.create(createFacturaDto, idPedido);
+  async create(@Body() createFacturaDto: FacturaDto, @Param('pedido', ParseIntPipe) idPedido: number) {
+    return await this.facturaService.create(createFacturaDto, idPedido);
   }
 
   @Get('/:id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.facturaService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+     return await this.facturaService.findOne(id);
   }
 
   @Delete('/:id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.facturaService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+     return await this.facturaService.remove(id);
   }
+
 }

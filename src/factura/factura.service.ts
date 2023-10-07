@@ -133,6 +133,10 @@ export class FacturaService {
       this.handleBDerrors(error);
     }
   }
+  async estadisticasYear(year:number) {
+    const facturas = this.facturaRepository.createQueryBuilder('factura')
+    .where('')
+  }
 
   private async checkIfExists(id: number) {
     try {
