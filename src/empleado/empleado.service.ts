@@ -41,7 +41,7 @@ export class EmpleadoService {
             nombre: true,
             telefono: true,
             id: true,
-            direccion: true,,
+            direccion: true,
             tipoCargo: true
           },
         })
