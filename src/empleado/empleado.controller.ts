@@ -24,13 +24,17 @@ export class EmpleadoController {
   async findAll() {
     return await this.empleadoService.findAll();
   }
+  @Get('/cargos')
+  async getCargos() {
+    return await this.empleadoService.getCargos();
+  }
 
   @Get('/:cedula')
   async findOne(@Param('cedula', ParseIntPipe) cedula: number) {
     return await this.empleadoService.findOne(cedula);
   }
 
-  @Put()
+  @Put('/actualizar')
   async update(@Body() updateEmpleadoDto: UpdateEmpleadoDto) {
     return await this.empleadoService.update(updateEmpleadoDto);
   }

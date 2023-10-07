@@ -37,7 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const payloadZ = {
       sub: userBd[0].id,
       usuario: userBd[0].usuario,
-      rol: userBd[0].empleado.tipoCargo.cargo,
+      rol: userBd[0].empleado.tipoCargo,
     };
     return {
       ...userBd,

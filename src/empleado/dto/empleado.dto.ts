@@ -5,7 +5,6 @@ import {
   Matches,
   MaxLength,
 } from 'class-validator';
-import { TipoCargo } from 'src/tipo-cargo/entities/tipo-cargo.entity';
 
 export class CreateEmpleadoDto {
   @IsNumber()
@@ -35,14 +34,11 @@ export class CreateEmpleadoDto {
 
   @IsNumber()
   @IsNotEmpty()
-  readonly tipoCargo: TipoCargo;
+  readonly tipoCargo: string;
 }
 
 export class UpdateEmpleadoDto {
 
-   @IsNumber()
-   @IsNotEmpty()
-   readonly id: number;
 
   @IsNumber()
   @IsNotEmpty()
@@ -71,5 +67,5 @@ export class UpdateEmpleadoDto {
 
   @IsNumber()
   @IsNotEmpty()
-  readonly tipoCargo: TipoCargo;
+  readonly tipoCargo: string;
 }

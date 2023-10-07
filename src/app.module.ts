@@ -6,7 +6,6 @@ import { CategoriaModule } from './categoria/categoria.module';
 import { ProductoModule } from './producto/producto.module';
 import { ClienteModule } from './cliente/cliente.module';
 import { MesaModule } from './mesa/mesa.module';
-import { TipoCargoModule } from './tipo-cargo/tipo-cargo.module';
 import { EmpleadoModule } from './empleado/empleado.module';
 import { PedidoModule } from './pedido/pedido.module';
 import { FacturaModule } from './factura/factura.module';
@@ -36,7 +35,6 @@ import { JwtModule } from '@nestjs/jwt';
     ProductoModule,
     ClienteModule,
     MesaModule,
-    TipoCargoModule,
     EmpleadoModule,
     FacturaModule,
     PedidoModule,

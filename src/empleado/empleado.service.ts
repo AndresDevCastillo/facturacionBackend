@@ -1,8 +1,6 @@
 import {
   BadRequestException,
-  ConflictException,
   HttpException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -10,14 +8,12 @@ import { CreateEmpleadoDto, UpdateEmpleadoDto } from './dto/empleado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Empleado } from './entities/empleado.entity';
 import { Repository } from 'typeorm';
-import { TipoCargoService } from 'src/tipo-cargo/tipo-cargo.service';
 
 @Injectable()
 export class EmpleadoService {
   constructor(
     @InjectRepository(Empleado)
     private empleadoRepository: Repository<Empleado>,
-    @Inject(TipoCargoService) private tipoCargoService: TipoCargoService,
   ) {}
 
   async create(empleado: CreateEmpleadoDto) {
@@ -41,7 +37,6 @@ export class EmpleadoService {
         .find({
           where: { estado: true },
           select: { cedula: true, nombre: true, telefono: true, id: true , direccion: true},
-          relations: {tipoCargo: true}
         })
         .then((resp) => {
           if (resp.length > 0) {
@@ -52,6 +47,10 @@ export class EmpleadoService {
     } catch (error) {
       return this.handleBDerrors(error);
     }
+  }
+  async getCargos() {
+    const cargos = ['Mesero', 'Cajero', 'Admin', 'Engineersoft'];
+    return cargos;
   }
 
   async findOne(cedula: number) {

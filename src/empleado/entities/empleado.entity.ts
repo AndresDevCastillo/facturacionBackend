@@ -1,10 +1,8 @@
 import { Factura } from 'src/factura/entities/factura.entity';
 import { Pedido } from 'src/pedido/entities/pedido.entity';
-import { TipoCargo } from 'src/tipo-cargo/entities/tipo-cargo.entity';
 import {
   Column,
   Entity,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -29,10 +27,8 @@ export class Empleado {
   @Column({ type: 'boolean', default: true })
   estado: boolean;
 
-  @ManyToOne(() => TipoCargo, (tipoCargo) => tipoCargo.empleado, {
-    eager: true,
-  })
-  tipoCargo: TipoCargo;
+  @Column({ type: 'varchar', length: 60 })
+  tipoCargo: string;
 
   @OneToMany(() => Factura, (factura) => factura.empleado)
   factura: Factura[];
