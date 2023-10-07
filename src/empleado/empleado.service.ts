@@ -18,7 +18,7 @@ export class EmpleadoService {
 
   async create(empleado: CreateEmpleadoDto) {
     try {
-      let existe = await this.checkIfExist(empleado.cedula);
+      const existe = await this.checkIfExist(empleado.cedula);
       if (existe) {
         return new BadRequestException({
           message: 'El empleado ya existe',
@@ -36,13 +36,19 @@ export class EmpleadoService {
       return await this.empleadoRepository
         .find({
           where: { estado: true },
-          select: { cedula: true, nombre: true, telefono: true, id: true , direccion: true, tipoCargo: true},
+          select: {
+            cedula: true,
+            nombre: true,
+            telefono: true,
+            id: true,
+            direccion: true,,
+            tipoCargo: true
+          },
         })
-        .then((resp) => {
-          if (resp.length > 0) {
-            return resp;
-          }
-          return new NotFoundException('No hay clientes registrados');
+        .then((empleados) => {
+          return empleados.length > 0
+            ? empleados
+            : new NotFoundException('No hay empleados registrados');
         });
     } catch (error) {
       return this.handleBDerrors(error);
@@ -72,7 +78,7 @@ export class EmpleadoService {
   }
   async update(empleadoDto: UpdateEmpleadoDto) {
     try {
-      let existe = await this.checkIfExist(empleadoDto.cedula);
+      const existe = await this.checkIfExist(empleadoDto.cedula);
       if (existe) {
         await this.remove(empleadoDto.cedula);
         return await this.create(empleadoDto);
@@ -88,7 +94,7 @@ export class EmpleadoService {
 
   async remove(cedula: number) {
     try {
-      let existe = await this.checkIfExist(cedula);
+      const existe = await this.checkIfExist(cedula);
       if (existe) {
         return this.empleadoRepository.update(
           { cedula: cedula },
