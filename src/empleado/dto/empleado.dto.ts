@@ -62,7 +62,7 @@ export class UpdateEmpleadoDto {
   })
   readonly direccion: string;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   readonly tipoCargo: string;
 }
