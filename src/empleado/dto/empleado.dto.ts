@@ -32,14 +32,11 @@ export class CreateEmpleadoDto {
   })
   readonly direccion: string;
 
-  @IsNumber()
   @IsNotEmpty()
   readonly tipoCargo: string;
 }
 
 export class UpdateEmpleadoDto {
-
-
   @IsNumber()
   @IsNotEmpty()
   readonly cedula: number; //Cédula a actualizar
