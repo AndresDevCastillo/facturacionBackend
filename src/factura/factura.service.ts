@@ -1,14 +1,16 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Factura } from './entities/factura.entity';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import {  In, Repository } from 'typeorm';
 import { DetalleFactura } from './entities/detalle-factura.entity';
 import { FacturaDto } from './dto/factura.dto';
 import { Pedido } from 'src/pedido/entities/pedido.entity';
+import { FacturaRepositoryService } from './entities/factura.repository';
 
 @Injectable()
 export class FacturaService {
   constructor(
+    private readonly facturaCustomRepository: FacturaRepositoryService,
     @InjectRepository(Factura) private facturaRepository: Repository<Factura>,
     @InjectRepository(DetalleFactura)
     private detalleFacturaRepository: Repository<DetalleFactura>,
@@ -133,9 +135,33 @@ export class FacturaService {
       this.handleBDerrors(error);
     }
   }
+
   async estadisticasYear(year:number) {
-    const facturas = this.facturaRepository.createQueryBuilder('factura')
-    .where('')
+   try {
+     const facturaByYear = await this.facturaCustomRepository.getEstadisticasYear(year);
+      return await this.calcularVentas(facturaByYear);
+
+   } catch (error) {
+    this.handleBDerrors(error);
+   }
+  }
+  async estadisticasMes(year:number, mes: number) {
+   try {
+     const facturaByYear = await this.facturaCustomRepository.getEstadisticasYearAndMonth(year, mes);
+      return await this.calcularVentas(facturaByYear);
+
+   } catch (error) {
+    this.handleBDerrors(error);
+   }
+  }
+  async estadisticasDia(year:number, mes: number, dia:number) {
+   try {
+     const facturaByYear = await this.facturaCustomRepository.getEstadisticasYearMonthAndDay(year, mes, dia);
+      return await this.calcularVentas(facturaByYear);
+
+   } catch (error) {
+    this.handleBDerrors(error);
+   }
   }
 
   private async checkIfExists(id: number) {
@@ -151,6 +177,39 @@ export class FacturaService {
     } catch (error) {
       this.handleBDerrors(error);
     }
+  }
+
+  private async  calcularVentas(factura: any[]){
+      const codigosFactura = factura.map(factura => {
+      return factura.codigo;
+    });
+    const productosByYear = await this.detalleFacturaRepository.findBy({
+      factura: In(codigosFactura), producto: {
+        estado:true
+      }
+    });
+    let grafica = [];
+    productosByYear.map((informacion => {
+      let existeProducto: number | boolean = true;
+      grafica.map((producto, index) => {
+        if (producto.nombre === informacion.producto.nombre){
+          existeProducto = index;
+          return
+        }
+      });
+      console.log(existeProducto);
+      if(existeProducto != true) {
+        grafica[existeProducto].cantidad += informacion.cantidad;
+      }
+      else {
+        grafica.push({
+          nombre: informacion.producto.nombre,
+          cantidad: informacion.cantidad
+        });
+      }
+
+    }))
+    return grafica;
   }
 
   private handleBDerrors(error: any) {

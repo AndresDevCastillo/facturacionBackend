@@ -6,11 +6,12 @@ import { Factura } from './entities/factura.entity';
 import { DetalleFactura } from './entities/detalle-factura.entity';
 import { Pedido } from 'src/pedido/entities/pedido.entity';
 import { Producto } from 'src/producto/entities/producto.entity';
+import { FacturaRepositoryService } from './entities/factura.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Factura, DetalleFactura, Pedido, Producto])],
   controllers: [FacturaController],
-  providers: [FacturaService],
+  providers: [FacturaService, FacturaRepositoryService],
   exports: [TypeOrmModule],
 })
 export class FacturaModule {}

@@ -15,28 +15,45 @@ import { FacturaDto } from './dto/factura.dto';
 export class FacturaController {
   constructor(private readonly facturaService: FacturaService) {}
 
-  @Get() 
+  @Get()
   async findAll() {
     return await this.facturaService.findAll();
   }
-  @Get('Estadisticas/year/:year')
-  async estadisticasYear(@Param('year') year: number) {
+  @Get('estadisticas/year/:year')
+  async estadisticasYear(@Param('year', ParseIntPipe) year: number) {
     return await this.facturaService.estadisticasYear(year);
+  }
+  @Get('estadisticas/mes/:year/:mes')
+  async estadisticasMes(
+    @Param('year', ParseIntPipe) year: number,
+    @Param('mes', ParseIntPipe) mes: number,
+  ) {
+    return await this.facturaService.estadisticasMes(year, mes);
+  }
+  @Get('estadisticas/dia/:year/:mes/:dia')
+  async estadisticasDia(
+    @Param('year', ParseIntPipe) year: number,
+    @Param('mes', ParseIntPipe) mes: number,
+    @Param('dia', ParseIntPipe) dia: number,
+  ) {
+    return await this.facturaService.estadisticasDia(year, mes, dia);
   }
 
   @Post('/crear/:pedido')
-  async create(@Body() createFacturaDto: FacturaDto, @Param('pedido', ParseIntPipe) idPedido: number) {
+  async create(
+    @Body() createFacturaDto: FacturaDto,
+    @Param('pedido', ParseIntPipe) idPedido: number,
+  ) {
     return await this.facturaService.create(createFacturaDto, idPedido);
   }
 
   @Get('/:id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
-     return await this.facturaService.findOne(id);
+    return await this.facturaService.findOne(id);
   }
 
   @Delete('/:id')
   async remove(@Param('id', ParseIntPipe) id: number) {
-     return await this.facturaService.remove(id);
+    return await this.facturaService.remove(id);
   }
-
 }

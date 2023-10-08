@@ -14,13 +14,33 @@ export class MesaService {
     @InjectRepository(Mesa) private mesaRepository: Repository<Mesa>,
   ) {}
 
-  create(createMesaDto: CreateMesaDto) {
+  async create(createMesaDto: CreateMesaDto) {
     try {
       return this.mesaRepository.insert(createMesaDto);
     } catch (error) {
       this.handleBDerrors(error);
     }
   }
+
+  async createMany(numero: number) {
+    try {
+      const mesasInsert = [];
+      for (let i = 1; i <= numero; i++) {
+        mesasInsert.push({
+          nombre: 'Mesa ' + i
+        });
+      }
+      mesasInsert.push({nombre: 'Domicilio'}, {nombre: 'Recogido en persona'});
+      const resp = await this.mesaRepository.insert(mesasInsert);
+      return {
+        arreglo: mesasInsert,
+        respuesta: resp
+      };
+    } catch (error) {
+      this.handleBDerrors(error);
+    }
+  }
+
 
   async findAll() {
     try {

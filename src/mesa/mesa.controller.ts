@@ -16,27 +16,31 @@ export class MesaController {
   constructor(private readonly mesaService: MesaService) {}
 
   @Post('/crear')
-  create(@Body() createMesaDto: CreateMesaDto) {
-    return this.mesaService.create(createMesaDto);
+  async create(@Body() createMesaDto: CreateMesaDto) {
+    return await this.mesaService.create(createMesaDto);
+  }
+  @Post('/crear/:numero')
+  async createMesas(@Param('numero', ParseIntPipe) numero: number){
+    return await this.mesaService.createMany(numero);
   }
 
   @Get()
-  findAll() {
-    return this.mesaService.findAll();
+  async findAll() {
+    return await this.mesaService.findAll();
   }
 
   @Get('/:id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.mesaService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.mesaService.findOne(id);
   }
 
   @Put('/actualizar')
-  update(@Body() updateMesaDto: UpdateMesaDto) {
-    return this.mesaService.update(updateMesaDto);
+  async update(@Body() updateMesaDto: UpdateMesaDto) {
+    return await this.mesaService.update(updateMesaDto);
   }
 
   @Delete('/:id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.mesaService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    return await this.mesaService.remove(id);
   }
 }
