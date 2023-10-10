@@ -2,9 +2,7 @@ import { Cliente } from 'src/cliente/entities/cliente.entity';
 import { Empleado } from 'src/empleado/entities/empleado.entity';
 import { Mesa } from 'src/mesa/entities/mesa.entity';
 import {
-  BeforeInsert,
   Column,
-  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToOne,
@@ -12,7 +10,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { DetalleFactura } from './detalle-factura.entity';
-import { IsDate } from 'class-validator';
 
 @Entity()
 export class Factura {
@@ -53,7 +50,6 @@ export class Factura {
   detalleFactura: DetalleFactura[];
 
   @Column({ type: 'date' }) // Columna para la fecha
-  @IsDate()
   fecha: Date;
 
   @Column({ type: 'time' }) // Columna para la hora

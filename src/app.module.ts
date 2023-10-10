@@ -14,6 +14,7 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { GastoModule } from './gasto/gasto.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { JwtModule } from '@nestjs/jwt';
     UsuarioModule,
     AuthModule,
     JwtModule,
+    GastoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
