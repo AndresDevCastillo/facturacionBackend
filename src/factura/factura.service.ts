@@ -186,7 +186,13 @@ export class FacturaService {
       f.gananciaNeto = 0;
     }
     const ganancias = parseInt(f.gananciaNeto) - parseInt(g.gastoTotal);
-    return ganancias;
+    const resp = {
+      fecha: year,
+      total: ganancias,
+      ganancia: parseInt(f.gananciaNeto),
+      gasto: parseInt(g.gastoTotal),
+    };
+    return resp;
   }
   async gananciasMes(year: number, mes: number) {
     const g: any = await this.GastoCustomRepository.getEstadisticasYearAndMonth(
@@ -203,8 +209,42 @@ export class FacturaService {
     if (!f.gananciaNeto) {
       f.gananciaNeto = 0;
     }
+
+    let mesL: string;
+
+    if (mes == 1) {
+      mesL = 'Enero';
+    } else if (mes == 2) {
+      mesL = 'Febrero';
+    } else if (mes == 3) {
+      mesL = 'Marzo';
+    } else if (mes == 4) {
+      mesL = 'Abril';
+    } else if (mes == 5) {
+      mesL = 'Mayo';
+    } else if (mes == 6) {
+      mesL = 'Junio';
+    } else if (mes == 7) {
+      mesL = 'Julio';
+    } else if (mes == 8) {
+      mesL = 'Agosto';
+    } else if (mes == 9) {
+      mesL = 'Septiembre';
+    } else if (mes == 10) {
+      mesL = 'Octubre';
+    } else if (mes == 11) {
+      mesL = 'Noviembre';
+    } else if (mes == 12) {
+      mesL = 'Diciembre';
+    }
     const ganancias = parseInt(f.gananciaNeto) - parseInt(g.gastoTotal);
-    return ganancias;
+    const resp = {
+      fecha: mesL,
+      total: ganancias,
+      ganancia: parseInt(f.gananciaNeto),
+      gasto: parseInt(g.gastoTotal),
+    };
+    return resp;
   }
 
   async gananciasDia(year: number, month: number, day: number) {
@@ -225,10 +265,27 @@ export class FacturaService {
     if (!f.gananciaNeto) {
       f.gananciaNeto = 0;
     }
-    console.log(f);
-    console.log(g);
     const ganancias = parseInt(f.gananciaNeto) - parseInt(g.gastoTotal);
-    return ganancias;
+
+    const fecha = new Date(year, month - 1, day);
+    const diasSemana = [
+      'Domingo',
+      'Lunes',
+      'Martes',
+      'Miércoles',
+      'Jueves',
+      'Viernes',
+      'Sábado',
+    ];
+
+    const diaSemana = diasSemana[fecha.getDay()];
+    const resp = {
+      fecha: diaSemana,
+      total: ganancias,
+      ganancia: parseInt(f.gananciaNeto),
+      gasto: parseInt(g.gastoTotal),
+    };
+    return resp;
   }
 
   private async checkIfExists(id: number) {
