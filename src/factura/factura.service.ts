@@ -6,11 +6,13 @@ import { DetalleFactura } from './entities/detalle-factura.entity';
 import { FacturaDto } from './dto/factura.dto';
 import { Pedido } from 'src/pedido/entities/pedido.entity';
 import { FacturaRepositoryService } from './entities/factura.repository';
+import { GastoRepositoryService } from 'src/gasto/entities/gasto.repository';
 
 @Injectable()
 export class FacturaService {
   constructor(
     private readonly facturaCustomRepository: FacturaRepositoryService,
+    private readonly GastoCustomRepository: GastoRepositoryService,
     @InjectRepository(Factura) private facturaRepository: Repository<Factura>,
     @InjectRepository(DetalleFactura)
     private detalleFacturaRepository: Repository<DetalleFactura>,
@@ -172,6 +174,61 @@ export class FacturaService {
     } catch (error) {
       this.handleBDerrors(error);
     }
+  }
+
+  async gananciasYear(year: number) {
+    const g: any = await this.GastoCustomRepository.getEstadisticasYear(year);
+    const f: any = await this.facturaCustomRepository.getGananciaNetoYear(year);
+    if (!g.gastoTotal) {
+      g.gastoTotal = 0;
+    }
+    if (!f.gananciaNeto) {
+      f.gananciaNeto = 0;
+    }
+    const ganancias = parseInt(f.gananciaNeto) - parseInt(g.gastoTotal);
+    return ganancias;
+  }
+  async gananciasMes(year: number, mes: number) {
+    const g: any = await this.GastoCustomRepository.getEstadisticasYearAndMonth(
+      year,
+      mes,
+    );
+    const f: any = await this.facturaCustomRepository.getGananciaNetoMes(
+      year,
+      mes,
+    );
+    if (!g.gastoTotal) {
+      g.gastoTotal = 0;
+    }
+    if (!f.gananciaNeto) {
+      f.gananciaNeto = 0;
+    }
+    const ganancias = parseInt(f.gananciaNeto) - parseInt(g.gastoTotal);
+    return ganancias;
+  }
+
+  async gananciasDia(year: number, month: number, day: number) {
+    const f: any = await this.facturaCustomRepository.getGananciaNetoDia(
+      year,
+      month,
+      day,
+    );
+    const g: any =
+      await this.GastoCustomRepository.getEstadisticasYearMonthAndDay(
+        year,
+        month,
+        day,
+      );
+    if (!g.gastoTotal) {
+      g.gastoTotal = 0;
+    }
+    if (!f.gananciaNeto) {
+      f.gananciaNeto = 0;
+    }
+    console.log(f);
+    console.log(g);
+    const ganancias = parseInt(f.gananciaNeto) - parseInt(g.gastoTotal);
+    return ganancias;
   }
 
   private async checkIfExists(id: number) {

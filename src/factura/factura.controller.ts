@@ -19,6 +19,9 @@ export class FacturaController {
   async findAll() {
     return await this.facturaService.findAll();
   }
+
+  // ESTADISTICAS DE PRODUCTOS
+
   @Get('estadisticas/year/:year')
   async estadisticasYear(@Param('year', ParseIntPipe) year: number) {
     return await this.facturaService.estadisticasYear(year);
@@ -37,6 +40,28 @@ export class FacturaController {
     @Param('dia', ParseIntPipe) dia: number,
   ) {
     return await this.facturaService.estadisticasDia(year, mes, dia);
+  }
+
+  // ESTADISTICAS DE GANANCIAS
+  @Get('ganancias/year/:year')
+  async gananciasYear(@Param('year', ParseIntPipe) year: number) {
+    return await this.facturaService.gananciasYear(year);
+  }
+
+  @Get('/ganancias/mes/:year/:mes')
+  async gananciasMes(
+    @Param('year', ParseIntPipe) year: number,
+    @Param('mes', ParseIntPipe) mes: number,
+  ) {
+    return await this.facturaService.gananciasMes(year, mes);
+  }
+  @Get('/ganancias/dia/:year/:mes/:dia')
+  async gananciasDia(
+    @Param('year', ParseIntPipe) year: number,
+    @Param('mes', ParseIntPipe) mes: number,
+    @Param('dia', ParseIntPipe) dia: number,
+  ) {
+    return await this.facturaService.gananciasDia(year, mes, dia);
   }
 
   @Post('/crear/:pedido')

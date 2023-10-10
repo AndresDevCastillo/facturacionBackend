@@ -9,16 +9,16 @@ export class GastoRepositoryService extends Repository<Gasto> {
   }
   async getEstadisticasYear(year: number) {
     return await this.createQueryBuilder('gasto')
-      .select('SUM(gasto.monto)', 'suma_montos')
+      .select('SUM(gasto.monto)', 'gastoTotal')
       .where('YEAR(gasto.fecha) = :year', { year: year })
-      .getMany();
+      .getRawOne();
   }
   async getEstadisticasYearAndMonth(year: number, month: number) {
     return await this.createQueryBuilder('gasto')
-      .select('SUM(gasto.monto)', 'suma_montos')
+      .select('SUM(gasto.monto)', 'gastoTotal')
       .where('YEAR(gasto.fecha) = :year', { year: year })
       .andWhere('MONTH(gasto.fecha) = :month', { month: month })
-      .getMany();
+      .getRawOne();
   }
   async getEstadisticasYearMonthAndDay(
     year: number,
@@ -26,10 +26,10 @@ export class GastoRepositoryService extends Repository<Gasto> {
     day: number,
   ) {
     return await this.createQueryBuilder('gasto')
-      .select('SUM(gasto.monto)', 'suma_montos')
+      .select('SUM(gasto.monto)', 'gastoTotal')
       .where('YEAR(gasto.fecha) = :year', { year: year })
       .andWhere('MONTH(gasto.fecha) = :month', { month: month })
       .andWhere('DAY(gasto.fecha) = :day', { day: day })
-      .getMany();
+      .getRawOne();
   }
 }

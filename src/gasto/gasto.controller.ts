@@ -24,6 +24,27 @@ export class GastoController {
   async findAll() {
     return await this.gastoService.findAll();
   }
+  @Get('/estadisticas/year/:year')
+  async gastoAnual(@Param('year', ParseIntPipe) year: number) {
+    return await this.gastoService.gastoAnual(year);
+  }
+
+  @Get('/estadisticas/mes/:year/:mes')
+  async gastoMensual(
+    @Param('year', ParseIntPipe) year: number,
+    @Param('mes', ParseIntPipe) mes: number,
+  ) {
+    return await this.gastoService.gastoMensual(year, mes);
+  }
+
+  @Get('/estadisticas/dia/:year/:mes/:dia')
+  async gastoDiario(
+    @Param('year', ParseIntPipe) year: number,
+    @Param('mes', ParseIntPipe) mes: number,
+    @Param('dia', ParseIntPipe) dia: number,
+  ) {
+    return await this.gastoService.gastoDiario(year, mes, dia);
+  }
 
   @Delete('/:id')
   remove(@Param('id', ParseIntPipe) id: number) {
