@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, Injectable } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -25,7 +25,7 @@ export class UsuarioService {
         this.handleBDerrors(error);
       }
     }
-    this.handleBDerrors('El empleado ya tiene un usuario asignado');
+    return this.handleBDerrors('El empleado ya tiene un usuario asignado', 409);
   }
 
   async findAll() {
@@ -49,10 +49,14 @@ export class UsuarioService {
       empleado: { id: idEmpleado },
     });
   }
-  private handleBDerrors(error: any) {
+  private handleBDerrors(error: any, codeError = 500) {
     console.log(error);
-    throw new HttpException('Por favor revise los logs del sistema', 500, {
-      cause: error,
-    });
+    throw new HttpException(
+      { message: error, suggest: 'Por favor revise los logs del sistema' },
+      codeError,
+      {
+        cause: error,
+      },
+    );
   }
 }
