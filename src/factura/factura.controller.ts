@@ -81,4 +81,5 @@ export class FacturaController {
   async remove(@Param('id', ParseIntPipe) id: number) {
     return await this.facturaService.remove(id);
   }
+
 }
