@@ -38,6 +38,7 @@ export class FacturaService {
     const colombiaDateTime = DateTime.fromJSDate(now, {
       zone: colombiaTimezone,
     });
+    
 
     const fecha = colombiaDateTime.toJSDate();
     const hora = colombiaDateTime.toFormat('HH:mm:ss');
