@@ -19,23 +19,7 @@ export class FacturaController {
   async findAll() {
     return await this.facturaService.findAll();
   }
-  @Get('/a')
-  a() {
-     const colombiaTimezone = 'America/Bogota';
-    const now = new Date();
-    const { DateTime } = require('luxon');
-    const colombiaDateTime = DateTime.fromJSDate(now, {
-      zone: colombiaTimezone,
-    });
-    const fecha = colombiaDateTime.toJSDate();
-    const hora = colombiaDateTime.toFormat('HH:mm:ss');
-    return {
-      now: now,
-      colombiaDateTime: colombiaDateTime,
-      fecha: fecha,
-      hora: hora
-    }
-  }
+ 
 
   // ESTADISTICAS DE PRODUCTOS
 
@@ -98,4 +82,5 @@ export class FacturaController {
   async remove(@Param('id', ParseIntPipe) id: number) {
     return await this.facturaService.remove(id);
   }
+
 }

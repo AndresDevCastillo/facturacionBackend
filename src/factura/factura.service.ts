@@ -40,7 +40,7 @@ export class FacturaService {
     });
     
 
-    const fecha = colombiaDateTime.toJSDate();
+    const fecha = this.formatearFechaYYMMDD(colombiaDateTime);
     const hora = colombiaDateTime.toFormat('HH:mm:ss');
     const newFactura = {
       ...createFacturaDto,
@@ -341,4 +341,14 @@ export class FacturaService {
       cause: error,
     });
   }
+  private formatearFechaYYMMDD(fechaS) {
+    const fecha = new Date(fechaS);
+  const year = fecha.getFullYear().toString().slice(-2); // Obtiene los últimos dos dígitos del año
+  const month = (fecha.getMonth() + 1).toString().padStart(2, '0'); // El mes se indexa desde 0, por lo que agregamos 1
+  const day = fecha.getDate().toString().padStart(2, '0');
+
+  const fechaFormateada = `${year}-${month}-${day}`;
+
+  return fechaFormateada;
+}
 }
