@@ -7,11 +7,12 @@ import {
 import { CreateEmpleadoDto, UpdateEmpleadoDto } from './dto/empleado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Empleado } from './entities/empleado.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository, Not } from 'typeorm';
 
 @Injectable()
 export class EmpleadoService {
   constructor(
+    private dataSource: DataSource,
     @InjectRepository(Empleado)
     private empleadoRepository: Repository<Empleado>,
   ) {}
@@ -42,7 +43,7 @@ export class EmpleadoService {
             telefono: true,
             id: true,
             direccion: true,
-            tipoCargo: true
+            tipoCargo: true,
           },
         })
         .then((empleados) => {
@@ -54,17 +55,31 @@ export class EmpleadoService {
       return this.handleBDerrors(error);
     }
   }
+  async getEmpleadosByEmpresa(cargo = 'Engineersoft') {
+    return await this.dataSource
+      .getRepository(Empleado)
+      .find({ where: { tipoCargo: Not(cargo), estado: true } });
+  }
   async getCargos() {
     const cargos = ['Mesero', 'Cajero', 'Admin', 'Engineersoft'];
     return cargos;
   }
-
+  async getCargosEmpresa() {
+    const cargos = ['Mesero', 'Cajero'];
+    return cargos;
+  }
   async findOne(cedula: number) {
     try {
       return await this.empleadoRepository
         .find({
           where: { estado: true, cedula: cedula },
-          select: { cedula: true, nombre: true, telefono: true, id: true , tipoCargo: true},
+          select: {
+            cedula: true,
+            nombre: true,
+            telefono: true,
+            id: true,
+            tipoCargo: true,
+          },
         })
         .then((resp) => {
           if (resp.length > 0) {
