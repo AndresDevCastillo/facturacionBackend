@@ -19,7 +19,6 @@ export class FacturaController {
   async findAll() {
     return await this.facturaService.findAll();
   }
- 
 
   // ESTADISTICAS DE PRODUCTOS
 
