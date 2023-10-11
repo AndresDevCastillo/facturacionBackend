@@ -1,11 +1,5 @@
 import { Factura } from 'src/factura/entities/factura.entity';
-import {
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Cliente {
@@ -21,7 +15,7 @@ export class Cliente {
   @Column({ type: 'varchar', length: 15 })
   telefono: string;
 
-  @Column({ type: 'varchar', length: 65 })
+  @Column({ type: 'varchar', length: 65, default: '', nullable: true })
   correo: string;
 
   @Column({ type: 'boolean', default: true })

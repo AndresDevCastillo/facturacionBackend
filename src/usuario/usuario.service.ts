@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,7 +22,7 @@ export class UsuarioService {
       try {
         return await this.usuarioRepository.insert(usuario);
       } catch (error) {
-        this.handleBDerrors(error);
+        return this.handleBDerrors(error);
       }
     }
     return this.handleBDerrors('El empleado ya tiene un usuario asignado', 409);

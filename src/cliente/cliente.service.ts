@@ -16,18 +16,19 @@ export class ClienteService {
   ) {}
 
   async create(createClienteDto: ClienteDto) {
-    try {
-      let existe = await this.checkIfExist(createClienteDto.cedula);
-      if (existe) {
-        return new BadRequestException({
-          message: 'La cedula ya existe',
-          Body: createClienteDto,
-        });
+    const existe = await this.checkIfExist(createClienteDto.cedula);
+    if (!existe) {
+      try {
+        const cliente = await this.clienteRepository.insert(createClienteDto);
+        return await this.findOne(createClienteDto.cedula);
+      } catch (error) {
+        return this.handleBDerrors(error);
       }
-      return await this.clienteRepository.insert(createClienteDto);
-    } catch (error) {
-      return this.handleBDerrors(error);
     }
+    return this.handleBDerrors(
+      `Ya existe un cliente con cédula: ${createClienteDto.cedula}`,
+      409,
+    );
   }
 
   async findAll() {
@@ -35,7 +36,13 @@ export class ClienteService {
       return await this.clienteRepository
         .find({
           where: { estado: true },
-          select: { cedula: true, correo: true, nombre: true, telefono: true , id: true},
+          select: {
+            cedula: true,
+            correo: true,
+            nombre: true,
+            telefono: true,
+            id: true,
+          },
         })
         .then((resp) => {
           if (resp.length > 0) {
@@ -53,7 +60,13 @@ export class ClienteService {
       return await this.clienteRepository
         .find({
           where: { estado: true, cedula: cedula },
-          select: { cedula: true, correo: true, nombre: true, telefono: true },
+          select: {
+            id: true,
+            cedula: true,
+            correo: true,
+            nombre: true,
+            telefono: true,
+          },
         })
         .then((resp) => {
           if (resp.length > 0) {
@@ -68,7 +81,7 @@ export class ClienteService {
 
   async update(updateClienteDto: ClienteDto) {
     try {
-      let existe = await this.checkIfExist(updateClienteDto.cedula);
+      const existe = await this.checkIfExist(updateClienteDto.cedula);
       if (existe) {
         await this.remove(updateClienteDto.cedula);
         return await this.create(updateClienteDto);
@@ -84,7 +97,7 @@ export class ClienteService {
 
   async remove(cedula: number) {
     try {
-      let existe = await this.checkIfExist(cedula);
+      const existe = await this.checkIfExist(cedula);
       if (existe) {
         return this.clienteRepository.update(
           { cedula: cedula },
@@ -106,6 +119,7 @@ export class ClienteService {
         cedula: cedula,
         estado: true,
       });
+
       if (cliente.length > 0) {
         return true;
       }
@@ -115,10 +129,14 @@ export class ClienteService {
     }
   }
 
-  private handleBDerrors(error: any) {
+  private handleBDerrors(error: any, codeError = 500) {
     console.log(error);
-    throw new HttpException('Por favor revise los logs del sistema', 500, {
-      cause: error,
-    });
+    throw new HttpException(
+      { message: error, suggest: 'Por favor revise los logs del sistema' },
+      codeError,
+      {
+        cause: error,
+      },
+    );
   }
 }

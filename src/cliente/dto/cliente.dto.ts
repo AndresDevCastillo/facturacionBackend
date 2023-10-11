@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString, Matches } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
 
 export class ClienteDto {
   @IsNotEmpty()
@@ -15,8 +21,7 @@ export class ClienteDto {
   @Matches(/^(?!\s*$).+/, { message: 'el telefono no puede estar vacío' })
   telefono: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  @Matches(/^(?!\s*$).+/, { message: 'el correo no puede estar vacío' })
   correo: string;
 }
