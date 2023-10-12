@@ -14,8 +14,22 @@ export class PedidoService {
   ) {}
   async create(createPedidoDto: CreatePedidoDto) {
     try {
+      const colombiaTimezone = 'America/Bogota';
+      const now = new Date();
+
+      const { DateTime } = require('luxon');
+      const colombiaDateTime = DateTime.fromJSDate(now, {
+        zone: colombiaTimezone,
+      });
+
+      const fecha = this.formatearFechaYYMMDD(colombiaDateTime);
+      const hora = colombiaDateTime.toFormat('HH:mm:ss');
       return await this.pedidoRepository
-        .insert(createPedidoDto)
+        .insert({
+          ...createPedidoDto,
+          fecha,
+          hora,
+        })
         .then(async (pedido) => {
           const detallePedido = createPedidoDto.detallePedido.map((detalle) => {
             return {
@@ -109,5 +123,15 @@ export class PedidoService {
           return pedido.mesa.id;
         });
       });
+  }
+  private formatearFechaYYMMDD(fechaS) {
+    const fecha = new Date(fechaS);
+    const year = fecha.getFullYear().toString().slice(-2); // Obtiene los últimos dos dígitos del año
+    const month = (fecha.getMonth() + 1).toString().padStart(2, '0'); // El mes se indexa desde 0, por lo que agregamos 1
+    const day = fecha.getDate().toString().padStart(2, '0');
+
+    const fechaFormateada = `${year}-${month}-${day}`;
+
+    return fechaFormateada;
   }
 }

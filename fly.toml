@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for facturacionres on 2023-10-08T23:42:22-05:00
+# fly.toml app configuration file generated for facturacionres on 2023-10-11T20:38:49-05:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -7,13 +7,14 @@ app = "facturacionres"
 primary_region = "scl"
 
 [build]
+
 [env]
-TZ = "America/Bogota"
-DB_PORT =  3306
-DB_HOST =    "database-facturacion.czonvdkvudeb.us-east-2.rds.amazonaws.com"
-DB_USER =  "engineersoft"
-DB_PASS = "adminengineer"
-DB_DATABASE =   "facturacion"   
+  DB_DATABASE = "facturacion"
+  DB_HOST = "database-facturacion.czonvdkvudeb.us-east-2.rds.amazonaws.com"
+  DB_PASS = "adminengineer"
+  DB_PORT = "3306"
+  DB_USER = "engineersoft"
+  TZ = "America/Bogota"
 
 [http_service]
   internal_port = 3000
