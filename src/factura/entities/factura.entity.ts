@@ -34,17 +34,18 @@ export class Factura {
   @Column({ type: 'int' })
   neto: number;
 
-  @Column({ type: 'integer'})
+  @Column({ type: 'integer' })
   total: number;
 
-  @Column({type: 'integer'})
+  @Column({ type: 'integer' })
   propina: number;
 
-  @Column({type: 'varchar'})
+  @Column({ type: 'varchar' })
   lugar: string;
 
-  @OneToMany(() => DetalleFactura, (detalleFactura) => detalleFactura.factura ,  {
-  eager: true,
+  @OneToMany(() => DetalleFactura, (detalleFactura) => detalleFactura.factura, {
+    eager: true,
+    onDelete: 'CASCADE',
   })
   @JoinTable()
   detalleFactura: DetalleFactura[];
@@ -54,6 +55,4 @@ export class Factura {
 
   @Column({ type: 'time' }) // Columna para la hora
   hora: string;
-
-  
 }
