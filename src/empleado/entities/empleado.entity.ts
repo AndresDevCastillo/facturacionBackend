@@ -1,11 +1,6 @@
 import { Factura } from 'src/factura/entities/factura.entity';
 import { Pedido } from 'src/pedido/entities/pedido.entity';
-import {
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Empleado {
@@ -27,7 +22,7 @@ export class Empleado {
   @Column({ type: 'boolean', default: true })
   estado: boolean;
 
-  @Column({ type: 'varchar', length: 60 })
+  @Column({ type: 'varchar', length: 60, select: true })
   tipoCargo: string;
 
   @OneToMany(() => Factura, (factura) => factura.empleado)
