@@ -10,12 +10,14 @@ export class FacturaRepositoryService extends Repository<Factura> {
   async getGananciaNetoYear(year: number) {
     return await this.createQueryBuilder('factura')
       .select('SUM(factura.total)', 'gananciaNeto')
+      .addSelect('COUNT(factura.total)', 'facturaCantidad')
       .where('YEAR(factura.fecha) = :year', { year: year })
       .getRawOne();
   }
   async getGananciaNetoMes(year: number, month: number) {
     return await this.createQueryBuilder('factura')
       .select('SUM(factura.total)', 'gananciaNeto')
+      .addSelect('COUNT(factura.total)', 'facturaCantidad')
       .where('YEAR(factura.fecha) = :year', { year: year })
       .andWhere('MONTH(factura.fecha) = :month', { month: month })
       .getRawOne();
@@ -24,6 +26,7 @@ export class FacturaRepositoryService extends Repository<Factura> {
   async getGananciaNetoDia(year: number, month: number, day: number) {
     return await this.createQueryBuilder('factura')
       .select('SUM(factura.total)', 'gananciaNeto')
+      .addSelect('COUNT(factura.total)', 'facturaCantidad')
       .where('YEAR(factura.fecha) = :year', { year: year })
       .andWhere('MONTH(factura.fecha) = :month', { month: month })
       .andWhere('DAY(factura.fecha) = :day', { day: day })

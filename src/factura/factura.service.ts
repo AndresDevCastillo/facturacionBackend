@@ -192,6 +192,7 @@ export class FacturaService {
       total: ganancias,
       ganancia: parseInt(f.gananciaNeto),
       gasto: parseInt(g.gastoTotal),
+      factura: f.facturaCantidad
     };
     return resp;
   }
@@ -244,6 +245,7 @@ export class FacturaService {
       total: ganancias,
       ganancia: parseInt(f.gananciaNeto),
       gasto: parseInt(g.gastoTotal),
+      factura: f.facturaCantidad
     };
     return resp;
   }
@@ -285,6 +287,7 @@ export class FacturaService {
       total: ganancias,
       ganancia: parseInt(f.gananciaNeto),
       gasto: parseInt(g.gastoTotal),
+      factura: f.facturaCantidad
     };
     return resp;
   }
