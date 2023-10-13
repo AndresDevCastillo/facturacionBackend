@@ -52,6 +52,6 @@ export class EmpleadoController {
 
   @Delete('/:cedula')
   async remove(@Param('cedula', ParseIntPipe) cedula: number) {
-    return await this.empleadoService.remove(cedula);
+    return await this.empleadoService.removeEnserio(cedula);
   }
 }

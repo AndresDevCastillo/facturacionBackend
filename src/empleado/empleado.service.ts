@@ -8,6 +8,7 @@ import { CreateEmpleadoDto, UpdateEmpleadoDto } from './dto/empleado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Empleado } from './entities/empleado.entity';
 import { DataSource, Repository, Not } from 'typeorm';
+import { Usuario } from 'src/usuario/entities/usuario.entity';
 
 @Injectable()
 export class EmpleadoService {
@@ -15,6 +16,8 @@ export class EmpleadoService {
     private dataSource: DataSource,
     @InjectRepository(Empleado)
     private empleadoRepository: Repository<Empleado>,
+    @InjectRepository(Usuario)
+    private usuarioRepository: Repository<Usuario>
   ) {}
 
   async create(empleado: CreateEmpleadoDto) {
@@ -95,8 +98,13 @@ export class EmpleadoService {
     try {
       const existe = await this.checkIfExist(empleadoDto.cedula);
       if (existe) {
+        const USEROLD = await this.empleadoRepository.findOneBy({cedula: empleadoDto.cedula, estado: true});
         await this.remove(empleadoDto.cedula);
-        return await this.create(empleadoDto);
+        return await this.create(empleadoDto).then(async (resp:any) => {
+          console.log(resp);
+          await this.usuarioRepository.update({empleado: {id: USEROLD.id}}, {empleado: {id: resp.raw.insertId}});
+        });
+
       }
       return new NotFoundException({
         Message: 'No se encontro el cliente',
@@ -112,6 +120,29 @@ export class EmpleadoService {
       const existe = await this.checkIfExist(cedula);
       if (existe) {
         return this.empleadoRepository.update(
+          { cedula: cedula },
+          { estado: false },
+        ).then(()=> {
+          return cedula;
+        });
+      }
+      return new NotFoundException({
+        Message: 'La cedula no existe',
+        Cedula: cedula,
+      });
+    } catch (error) {
+      this.handleBDerrors(error);
+    }
+  }
+   async removeEnserio(cedula: number) {
+    try {
+      const existe = await this.checkIfExist(cedula);
+      if (existe) {
+        
+        const EMPLEADO = await this.empleadoRepository.findOneBy({cedula: cedula, estado: true});
+        const USER = await this.usuarioRepository.findOneBy({empleado: {id: EMPLEADO.id}});
+         await this.usuarioRepository.delete(USER.id);
+        return await this.empleadoRepository.update(
           { cedula: cedula },
           { estado: false },
         );
