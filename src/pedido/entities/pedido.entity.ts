@@ -2,7 +2,6 @@ import { Empleado } from 'src/empleado/entities/empleado.entity';
 import { Mesa } from 'src/mesa/entities/mesa.entity';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToOne,
@@ -31,4 +30,7 @@ export class Pedido {
 
   @Column({ type: 'time' }) // Columna para la hora
   hora: string;
+
+  @Column({})
+  descripcion: string;
 }

@@ -112,15 +112,6 @@ export class FacturaService {
         })
         .then((data: any) => {
           if (data.length > 0) {
-            if (data[0].codigo < 1000 && data[0].codigo >= 100) {
-              data[0].codigo = '0' + data[0].codigo;
-            }
-            if (data[0].codigo < 100 && data[0].codigo >= 10) {
-              data[0].codigo = '00' + data[0].codigo;
-            }
-            if (data[0].codigo < 10 && data[0].codigo >= 0) {
-              data[0].codigo = '000' + data[0].codigo;
-            }
             return data[0];
           }
           return new NotFoundException(`No se encontro el id: ${id}`);
