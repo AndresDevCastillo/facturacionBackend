@@ -27,7 +27,10 @@ export class FacturaService {
         cliente: true,
         mesa: true,
       },
-    });
+      order: {
+        codigo: "DESC",
+      }
+    }, );
   }
 
   async create(createFacturaDto: FacturaDto, idPedido: number) {

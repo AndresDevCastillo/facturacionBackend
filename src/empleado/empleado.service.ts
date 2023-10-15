@@ -141,7 +141,9 @@ export class EmpleadoService {
         
         const EMPLEADO = await this.empleadoRepository.findOneBy({cedula: cedula, estado: true});
         const USER = await this.usuarioRepository.findOneBy({empleado: {id: EMPLEADO.id}});
-         await this.usuarioRepository.delete(USER.id);
+         if(USER){
+          await this.usuarioRepository.delete(USER.id);
+         }
         return await this.empleadoRepository.update(
           { cedula: cedula },
           { estado: false },
