@@ -14,9 +14,12 @@ export class InventarioService {
   async create(producto: CreateInventarioDto) {
     try {
       let existeProducto: boolean = false;
-      const inventario: any = await this.inventarioRepository.find();
+      const inventario: any = await this.inventarioRepository.find({
+        relations: { producto: true },
+      });
+      console.log(inventario);
       inventario.map((inventario: any) => {
-        if (inventario.producto == inventario.producto.id) {
+        if (producto.producto == inventario.producto.id) {
           existeProducto = true;
         }
       });
