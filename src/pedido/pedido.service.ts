@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Pedido } from './entities/pedido.entity';
 import { Repository } from 'typeorm';
 import { DetalleTicket } from './entities/detalle-ticket.entity';
+import { CambiarMesaDto } from './dto/cambiarMesa.dto';
 
 @Injectable()
 export class PedidoService {
@@ -123,6 +124,15 @@ export class PedidoService {
           return pedido.mesa.id;
         });
       });
+  }
+
+  async cambiarMesa(cambiarMesaDto: CambiarMesaDto) {
+    return await this.pedidoRepository.update(
+      {
+        ticket: cambiarMesaDto.ticket,
+      },
+      { mesa: { id: cambiarMesaDto.mesaNew } },
+    );
   }
   private formatearFechaYYMMDD(fechaS) {
     const fecha = new Date(fechaS);

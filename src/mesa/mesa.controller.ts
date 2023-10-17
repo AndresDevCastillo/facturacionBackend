@@ -20,7 +20,7 @@ export class MesaController {
     return await this.mesaService.create(createMesaDto);
   }
   @Post('/crear/:numero')
-  async createMesas(@Param('numero', ParseIntPipe) numero: number){
+  async createMesas(@Param('numero', ParseIntPipe) numero: number) {
     return await this.mesaService.createMany(numero);
   }
 
@@ -28,7 +28,10 @@ export class MesaController {
   async findAll() {
     return await this.mesaService.findAll();
   }
-
+  @Get('/disponibles')
+  async getMesasDisponibles() {
+    return await this.mesaService.getMesasDisponibles();
+  }
   @Get('/:id')
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.mesaService.findOne(id);

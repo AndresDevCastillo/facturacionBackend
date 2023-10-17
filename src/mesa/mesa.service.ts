@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -7,10 +8,12 @@ import { CreateMesaDto } from './dto/mesa.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Mesa } from './entities/mesa.entity';
 import { Repository } from 'typeorm';
+import { PedidoService } from 'src/pedido/pedido.service';
 
 @Injectable()
 export class MesaService {
   constructor(
+    @Inject(PedidoService) private pedidoService: PedidoService,
     @InjectRepository(Mesa) private mesaRepository: Repository<Mesa>,
   ) {}
 
@@ -27,20 +30,22 @@ export class MesaService {
       const mesasInsert = [];
       for (let i = 1; i <= numero; i++) {
         mesasInsert.push({
-          nombre: 'Mesa ' + i
+          nombre: 'Mesa ' + i,
         });
       }
-      mesasInsert.push({nombre: 'Domicilio'}, {nombre: 'Recogido en persona'});
+      mesasInsert.push(
+        { nombre: 'Domicilio' },
+        { nombre: 'Recogido en persona' },
+      );
       const resp = await this.mesaRepository.insert(mesasInsert);
       return {
         arreglo: mesasInsert,
-        respuesta: resp
+        respuesta: resp,
       };
     } catch (error) {
       this.handleBDerrors(error);
     }
   }
-
 
   async findAll() {
     try {
@@ -57,6 +62,19 @@ export class MesaService {
     }
   }
 
+  async getMesasDisponibles() {
+    const mesasPedido = await this.pedidoService.getMesasConPedidos();
+    const mesasDisponible = await this.findAll();
+    let mesasCambio = [];
+    if (Array.isArray(mesasDisponible)) {
+      mesasCambio = mesasDisponible.filter((mesa) => {
+        return mesasPedido.includes(mesa.id)
+          ? false
+          : { id: mesa.id, nombre: mesa.nombre };
+      });
+    }
+    return mesasCambio;
+  }
   async findOne(id: number) {
     try {
       return await this.mesaRepository
@@ -76,7 +94,7 @@ export class MesaService {
 
   async update(updateMesaDto) {
     try {
-      let existe = await this.checkIfExist(updateMesaDto.id);
+      const existe = await this.checkIfExist(updateMesaDto.id);
       if (existe) {
         await this.remove(updateMesaDto.id);
         delete updateMesaDto.id;
@@ -90,7 +108,7 @@ export class MesaService {
 
   async remove(id: number) {
     try {
-      let existe = await this.checkIfExist(id);
+      const existe = await this.checkIfExist(id);
       if (existe) {
         return await this.mesaRepository.update({ id: id }, { estado: false });
       }

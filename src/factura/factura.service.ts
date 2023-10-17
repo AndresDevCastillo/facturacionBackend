@@ -1,4 +1,9 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Factura } from './entities/factura.entity';
 import { In, Repository } from 'typeorm';
@@ -7,6 +12,8 @@ import { FacturaDto } from './dto/factura.dto';
 import { Pedido } from 'src/pedido/entities/pedido.entity';
 import { FacturaRepositoryService } from './entities/factura.repository';
 import { GastoRepositoryService } from 'src/gasto/entities/gasto.repository';
+import { HistorialService } from 'src/historial/historial.service';
+import { RemoveFacturaDto } from './dto/remove-factura.dto';
 
 @Injectable()
 export class FacturaService {
@@ -18,6 +25,7 @@ export class FacturaService {
     private detalleFacturaRepository: Repository<DetalleFactura>,
     @InjectRepository(Pedido)
     private pedidoRepository: Repository<Pedido>,
+    @Inject(HistorialService) private historialService: HistorialService,
   ) {}
   async findAll() {
     return await this.facturaRepository.find({
@@ -28,9 +36,9 @@ export class FacturaService {
         mesa: true,
       },
       order: {
-        codigo: "DESC",
-      }
-    }, );
+        codigo: 'DESC',
+      },
+    });
   }
 
   async create(createFacturaDto: FacturaDto, idPedido: number) {
@@ -41,7 +49,6 @@ export class FacturaService {
     const colombiaDateTime = DateTime.fromJSDate(now, {
       zone: colombiaTimezone,
     });
-    
 
     const fecha = this.formatearFechaYYMMDD(colombiaDateTime);
     const hora = colombiaDateTime.toFormat('HH:mm:ss');
@@ -54,7 +61,7 @@ export class FacturaService {
       return await this.facturaRepository
         .insert(newFactura)
         .then(async (resp) => {
-          let codigo = resp.identifiers[0].codigo;
+          const codigo = resp.identifiers[0].codigo;
           let detalleFactura = createFacturaDto.detalleFactura;
           detalleFactura = detalleFactura.map((obj: any) => {
             obj.factura = codigo;
@@ -124,13 +131,23 @@ export class FacturaService {
     }
   }
 
-  async remove(id: number) {
+  async remove(removeFacturaDto: RemoveFacturaDto) {
     try {
-      const existe = await this.checkIfExists(id);
+      const existe = await this.checkIfExists(removeFacturaDto.id);
       if (existe) {
-        return await this.facturaRepository.delete(id);
+        const dataFactura = await this.findOne(removeFacturaDto.id);
+        const respHistorial = await this.historialService.create(
+          dataFactura,
+          removeFacturaDto.razon,
+        );
+        if (respHistorial) {
+          return await this.facturaRepository.delete(removeFacturaDto.id);
+        }
+        return false;
       }
-      return new NotFoundException(`No se enontro el id: ${id}`);
+      return new NotFoundException(
+        `No se encontro el id: ${removeFacturaDto.id}`,
+      );
     } catch (error) {
       this.handleBDerrors(error);
     }
@@ -186,7 +203,7 @@ export class FacturaService {
       total: ganancias,
       ganancia: parseInt(f.gananciaNeto),
       gasto: parseInt(g.gastoTotal),
-      factura: f.facturaCantidad
+      factura: f.facturaCantidad,
     };
     return resp;
   }
@@ -239,7 +256,7 @@ export class FacturaService {
       total: ganancias,
       ganancia: parseInt(f.gananciaNeto),
       gasto: parseInt(g.gastoTotal),
-      factura: f.facturaCantidad
+      factura: f.facturaCantidad,
     };
     return resp;
   }
@@ -281,7 +298,7 @@ export class FacturaService {
       total: ganancias,
       ganancia: parseInt(f.gananciaNeto),
       gasto: parseInt(g.gastoTotal),
-      factura: f.facturaCantidad
+      factura: f.facturaCantidad,
     };
     return resp;
   }
@@ -311,7 +328,7 @@ export class FacturaService {
         estado: true,
       },
     });
-    let grafica = [];
+    const grafica = [];
     productosByYear.map((informacion) => {
       let existeProducto: number | boolean = true;
       grafica.map((producto, index) => {
@@ -340,12 +357,12 @@ export class FacturaService {
   }
   private formatearFechaYYMMDD(fechaS) {
     const fecha = new Date(fechaS);
-  const year = fecha.getFullYear().toString().slice(-2); // Obtiene los últimos dos dígitos del año
-  const month = (fecha.getMonth() + 1).toString().padStart(2, '0'); // El mes se indexa desde 0, por lo que agregamos 1
-  const day = fecha.getDate().toString().padStart(2, '0');
+    const year = fecha.getFullYear().toString().slice(-2); // Obtiene los últimos dos dígitos del año
+    const month = (fecha.getMonth() + 1).toString().padStart(2, '0'); // El mes se indexa desde 0, por lo que agregamos 1
+    const day = fecha.getDate().toString().padStart(2, '0');
 
-  const fechaFormateada = `${year}-${month}-${day}`;
+    const fechaFormateada = `${year}-${month}-${day}`;
 
-  return fechaFormateada;
-}
+    return fechaFormateada;
+  }
 }

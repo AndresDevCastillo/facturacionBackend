@@ -7,9 +7,11 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Put,
 } from '@nestjs/common';
 import { FacturaService } from './factura.service';
 import { FacturaDto } from './dto/factura.dto';
+import { RemoveFacturaDto } from './dto/remove-factura.dto';
 
 @Controller('factura')
 export class FacturaController {
@@ -77,9 +79,8 @@ export class FacturaController {
     return await this.facturaService.findOne(id);
   }
 
-  @Delete('/:id')
-  async remove(@Param('id', ParseIntPipe) id: number) {
-    return await this.facturaService.remove(id);
+  @Put('/eliminar')
+  async remove(@Body() removeFacturaDto: RemoveFacturaDto) {
+    return await this.facturaService.remove(removeFacturaDto);
   }
-
 }

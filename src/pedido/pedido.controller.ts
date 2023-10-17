@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { PedidoService } from './pedido.service';
 import { CreatePedidoDto, UpdatePedidoDto } from './dto/pedido.dto';
+import { CambiarMesaDto } from './dto/cambiarMesa.dto';
 
 @Controller('pedido')
 export class PedidoController {
@@ -18,6 +19,11 @@ export class PedidoController {
   @Post('/crear')
   async create(@Body() createPedidoDto: CreatePedidoDto) {
     return await this.pedidoService.create(createPedidoDto);
+  }
+
+  @Post('/cambiarMesa')
+  async cambiarMesa(@Body() cambiarMesaDto: CambiarMesaDto) {
+    return await this.pedidoService.cambiarMesa(cambiarMesaDto);
   }
   @Get('/mesas')
   async getMesasConPedidos() {

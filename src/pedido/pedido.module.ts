@@ -9,6 +9,6 @@ import { DetalleTicket } from './entities/detalle-ticket.entity';
   imports: [TypeOrmModule.forFeature([Pedido, DetalleTicket])],
   controllers: [PedidoController],
   providers: [PedidoService],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, PedidoService],
 })
 export class PedidoModule {}

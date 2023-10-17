@@ -9,6 +9,8 @@ import { Producto } from 'src/producto/entities/producto.entity';
 import { FacturaRepositoryService } from './entities/factura.repository';
 import { Gasto } from 'src/gasto/entities/gasto.entity';
 import { GastoRepositoryService } from 'src/gasto/entities/gasto.repository';
+import { HistorialModule } from 'src/historial/historial.module';
+import { HistorialService } from 'src/historial/historial.service';
 
 @Module({
   imports: [
@@ -19,9 +21,10 @@ import { GastoRepositoryService } from 'src/gasto/entities/gasto.repository';
       Producto,
       Gasto,
     ]),
+    HistorialModule
   ],
   controllers: [FacturaController],
-  providers: [FacturaService, FacturaRepositoryService, GastoRepositoryService],
+  providers: [FacturaService, FacturaRepositoryService, GastoRepositoryService, HistorialService],
   exports: [TypeOrmModule],
 })
 export class FacturaModule {}
