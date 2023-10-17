@@ -16,6 +16,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { GastoModule } from './gasto/gasto.module';
 import { HistorialModule } from './historial/historial.module';
+import { InventarioModule } from './inventario/inventario.module';
 
 @Module({
   imports: [
@@ -44,7 +45,8 @@ import { HistorialModule } from './historial/historial.module';
     AuthModule,
     JwtModule,
     GastoModule,
-    HistorialModule
+    HistorialModule,
+    InventarioModule,
   ],
   controllers: [AppController],
   providers: [AppService],
