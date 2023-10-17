@@ -22,7 +22,8 @@ export class inventarioCustomRepository extends Repository<Inventario> {
         });
         
         return await this.producoRepository.find({where: {
-            id: Not(In(IdsInventario))
+            id: Not(In(IdsInventario)),
+            estado: true
         }})
     } catch (error) {
         this.handleBDerrors(error);

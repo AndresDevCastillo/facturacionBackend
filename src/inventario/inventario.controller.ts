@@ -30,7 +30,7 @@ export class InventarioController {
   }
   @Put('/actualizar')
   async update(@Body() inventario: updateInventarioDto) {
-    return await this.update(inventario);
+    return await this.inventarioService.update(inventario);
   }
 
   @Delete(':id')

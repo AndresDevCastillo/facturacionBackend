@@ -39,6 +39,9 @@ export class InventarioService {
   async findAll() {
     try {
       return await this.inventarioRepository.find({
+        where: {
+          estado: true
+        },
         relations: {
           producto: true,
         },
