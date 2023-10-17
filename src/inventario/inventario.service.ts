@@ -1,14 +1,16 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Inject, Injectable } from '@nestjs/common';
 import { CreateInventarioDto, updateInventarioDto } from './dto/inventario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inventario } from './entities/inventario.entity';
 import { Repository } from 'typeorm';
+import { inventarioCustomRepository } from './entities/inventario.repository';
 
 @Injectable()
 export class InventarioService {
   constructor(
     @InjectRepository(Inventario)
     private inventarioRepository: Repository<Inventario>,
+    private inventarioCustomRepository: inventarioCustomRepository,
   ) {}
 
   async create(producto: CreateInventarioDto) {
@@ -43,6 +45,15 @@ export class InventarioService {
       });
     } catch (error) {
       this.handleBDerrors(error);
+    }
+  }
+
+  async productosSinInvetario() {
+    try {
+      return this.inventarioCustomRepository.productosSinInventarios();
+
+    } catch(error) {
+       this.handleBDerrors(error);
     }
   }
   async update(inventario: updateInventarioDto) {

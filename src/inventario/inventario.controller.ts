@@ -24,6 +24,10 @@ export class InventarioController {
   async findAll() {
     return await this.inventarioService.findAll();
   }
+  @Get('/productos')
+  async findProductos(){
+    return await this.inventarioService.productosSinInvetario();
+  }
   @Put('/actualizar')
   async update(@Body() inventario: updateInventarioDto) {
     return await this.update(inventario);
