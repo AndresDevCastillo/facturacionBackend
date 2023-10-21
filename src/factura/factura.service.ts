@@ -141,7 +141,8 @@ export class FacturaService {
           removeFacturaDto.razon,
         );
         if (respHistorial) {
-          return await this.facturaRepository.delete(removeFacturaDto.id);
+          await this.facturaRepository.delete(removeFacturaDto.id);
+          return true;
         }
         return false;
       }

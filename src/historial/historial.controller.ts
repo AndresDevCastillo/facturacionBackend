@@ -7,8 +7,8 @@ export class HistorialController {
   constructor(private readonly historialService: HistorialService) {}
 
   @Get()
-  findAll() {
-    return this.historialService.findAll();
+ async findAll() {
+    return await this.historialService.findAll();
   }
 
   @Get(':id')
