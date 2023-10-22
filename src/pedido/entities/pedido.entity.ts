@@ -31,6 +31,4 @@ export class Pedido {
   @Column({ type: 'time' }) // Columna para la hora
   hora: string;
 
-  @Column({})
-  descripcion: string;
 }

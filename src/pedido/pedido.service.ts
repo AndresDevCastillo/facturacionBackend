@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePedidoDto, UpdatePedidoDto } from './dto/pedido.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Pedido } from './entities/pedido.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { DetalleTicket } from './entities/detalle-ticket.entity';
 import { CambiarMesaDto } from './dto/cambiarMesa.dto';
+import { Inventario } from 'src/inventario/entities/inventario.entity';
+import { inventarioCustomRepository } from 'src/inventario/entities/inventario.repository';
 
 @Injectable()
 export class PedidoService {
@@ -12,9 +14,46 @@ export class PedidoService {
     @InjectRepository(Pedido) private pedidoRepository: Repository<Pedido>,
     @InjectRepository(DetalleTicket)
     private detallePedidoRepository: Repository<DetalleTicket>,
+    @InjectRepository(Inventario)
+    private inventarioRepository: Repository<Inventario>,
   ) {}
   async create(createPedidoDto: CreatePedidoDto) {
     try {
+      let noHayStock: any = false;
+      const productoInventario = createPedidoDto.detallePedido.map((pedido) => {
+        return pedido.idInventario;
+      });
+      const inventarioProductos = await this.inventarioRepository.find({
+        where: {
+          id: In(productoInventario),
+        },
+        relations: {
+          producto: true,
+        },
+      });
+      inventarioProductos.map((inventario) => {
+        createPedidoDto.detallePedido.map((pedido, indexPedido) => {
+          if (
+            inventario.id == pedido.idInventario &&
+            pedido.cantidad > inventario.cantidad
+          ) {
+            noHayStock = {
+              noHayStock: `No hay ${inventario.producto.nombre} - Existencia: ${inventario.cantidad}`,
+              indice: indexPedido,
+            };
+          }
+        });
+      });
+      const productosActualizarStonck =  createPedidoDto.detallePedido.map(pedido => {
+        return {
+          idInventario: pedido.idInventario,
+          cantidad: pedido.cantidad
+        }
+      });
+      await this.disminuirCantidadStonck(productosActualizarStonck);
+      if (noHayStock) {
+        return noHayStock;
+      }
       const colombiaTimezone = 'America/Bogota';
       const now = new Date();
 
@@ -37,6 +76,8 @@ export class PedidoService {
               pedido: pedido.raw.insertId,
               producto: detalle.producto,
               cantidad: detalle.cantidad,
+              comentario: detalle.comentario,
+              idInventario: detalle.idInventario,
             };
           });
           const gDetalleP = await this.detallePedidoRepository
@@ -134,6 +175,18 @@ export class PedidoService {
       { mesa: { id: cambiarMesaDto.mesaNew } },
     );
   }
+
+  async disminuirCantidadStonck(productos: any) {
+    try {
+      for (let i = 0; i < productos.length; i++) {
+        const producto = await this.inventarioRepository.findOneBy({id: productos[i].idInventario});
+        producto.existencia = producto.existencia - productos[i].cantidad;
+        await this.inventarioRepository.save(producto);
+      }
+    } catch (error) {
+      this.handleBDerrors(error);
+    }
+  }
   private formatearFechaYYMMDD(fechaS) {
     const fecha = new Date(fechaS);
     const year = fecha.getFullYear().toString().slice(-2); // Obtiene los últimos dos dígitos del año
@@ -143,5 +196,11 @@ export class PedidoService {
     const fechaFormateada = `${year}-${month}-${day}`;
 
     return fechaFormateada;
+  }
+  private handleBDerrors(error: any) {
+    console.log(error);
+    throw new HttpException('Por favor revise los logs del sistema', 500, {
+      cause: error,
+    });
   }
 }

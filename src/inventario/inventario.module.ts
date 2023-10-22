@@ -10,6 +10,6 @@ import { inventarioCustomRepository } from './entities/inventario.repository';
   imports: [TypeOrmModule.forFeature([Inventario, Producto])],
   controllers: [InventarioController],
   providers: [InventarioService, inventarioCustomRepository],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, inventarioCustomRepository],
 })
 export class InventarioModule {}

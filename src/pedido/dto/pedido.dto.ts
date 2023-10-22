@@ -13,8 +13,6 @@ export class CreatePedidoDto {
   @IsArray()
   readonly detallePedido: DetalleTicketDto[];
 
-  @IsString()
-  readonly descripcion: string;
 }
 
 export class UpdatePedidoDto {

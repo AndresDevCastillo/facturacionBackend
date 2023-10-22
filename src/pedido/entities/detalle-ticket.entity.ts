@@ -20,4 +20,10 @@ export class DetalleTicket {
 
   @Column()
   cantidad: number;
+
+  @Column({type: 'simple-array'})
+  comentario: string[];
+
+  @Column()
+  idInventario: number;
 }

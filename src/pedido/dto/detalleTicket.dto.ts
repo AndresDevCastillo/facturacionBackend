@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber } from 'class-validator';
 import { Pedido } from '../entities/pedido.entity';
 import { Producto } from 'src/producto/entities/producto.entity';
 
@@ -12,5 +12,11 @@ export class DetalleTicketDto {
   @IsNotEmpty()
   @IsNumber()
   readonly cantidad: number;
+
+  @IsArray()
+  readonly comentario: string[];
+
+  @IsNumber()
+  readonly idInventario: number;
 
 }
