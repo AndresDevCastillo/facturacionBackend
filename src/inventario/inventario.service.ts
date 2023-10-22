@@ -2,7 +2,7 @@ import { BadRequestException, HttpException, Inject, Injectable } from '@nestjs/
 import { CreateInventarioDto, updateInventarioDto } from './dto/inventario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Inventario } from './entities/inventario.entity';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { inventarioCustomRepository } from './entities/inventario.repository';
 
 @Injectable()
@@ -40,7 +40,8 @@ export class InventarioService {
     try {
       return await this.inventarioRepository.find({
         where: {
-          estado: true
+          estado: true,
+          existencia: MoreThan(0)
         },
         relations: {
           producto: true,
@@ -56,7 +57,7 @@ export class InventarioService {
       return this.inventarioCustomRepository.productosSinInventarios();
 
     } catch(error) {
-       this.handleBDerrors(error);
+       this.handleBDerrors(error);  
     }
   }
   async update(inventario: updateInventarioDto) {
