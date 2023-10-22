@@ -72,7 +72,7 @@ export class Historial {
   @Column({ type: 'date' })
   fecha_historial: Date;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'time' })
   hora_historial: Date;
 
   @Column({ type: 'text' })

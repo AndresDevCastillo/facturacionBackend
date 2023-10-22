@@ -34,6 +34,7 @@ export class HistorialService {
         medio_pago: dataFactura.medio_pago,
         descuento: dataFactura.descuento,
         neto: dataFactura.neto,
+        total: dataFactura.total,
         propina: dataFactura.propina,
         lugar: dataFactura.lugar,
         detalleHistorial: detalleHistorial,
@@ -57,7 +58,8 @@ export class HistorialService {
           await this.detalleHistorialRepository.insert(detalleHistorialIns);
           return true;
         })
-        .catch(() => {
+        .catch((error) => {
+          console.log('ErrorInterno', error);
           return false;
         });
     } catch (error) {
@@ -66,8 +68,8 @@ export class HistorialService {
     }
   }
 
-  findAll() {
-    return `This action returns all historial`;
+  async findAll() {
+    return await this.historialRepository.find();
   }
 
   findOne(id: number) {
@@ -89,7 +91,7 @@ export class HistorialService {
     const day = fecha.getDate().toString().padStart(2, '0');
 
     const fechaFormateada = `${year}-${month}-${day}`;
-    const hora = `${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getMilliseconds()}`;
+    const hora = `${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`;
     return [fechaFormateada, hora];
   }
 }
