@@ -27,15 +27,27 @@ export class PedidoController {
     return await this.pedidoService.cambiarMesa(cambiarMesaDto);
   }
 
-  @Put('calificar/:id')
-  async calificarPedido(@Body() calificacion : CalificacionDto, @Param('id', ParseIntPipe) idPedido: number){
-    return await this.pedidoService.calificarPedido(idPedido, calificacion);
+  @Put('/listo/:ticket')
+  async cambiarPedidoListo(@Param('ticket', ParseIntPipe) ticket: number) {
+    return await this.pedidoService.cambiarPedidoListo(ticket);
   }
 
+  @Put('calificar/:id')
+  async calificarPedido(
+    @Body() calificacion: CalificacionDto,
+    @Param('id', ParseIntPipe) idPedido: number,
+  ) {
+    return await this.pedidoService.calificarPedido(idPedido, calificacion);
+  }
 
   @Get('/mesas')
   async getMesasConPedidos() {
     return await this.pedidoService.getMesasConPedidos();
+  }
+
+  @Get('/cocinero')
+  async findCocinero() {
+    return await this.pedidoService.findCocinero();
   }
 
   @Get('/:id')
@@ -47,8 +59,6 @@ export class PedidoController {
   async findAll() {
     return await this.pedidoService.findAll();
   }
-
-
 
   @Delete('/:id')
   async remove(@Param('id', ParseIntPipe) id: number) {

@@ -1,4 +1,9 @@
-import { HttpException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePedidoDto, UpdatePedidoDto } from './dto/pedido.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Pedido } from './entities/pedido.entity';
@@ -31,7 +36,7 @@ export class PedidoService {
           producto: true,
         },
       });
-      
+
       inventarioProductos.map((inventario) => {
         createPedidoDto.detallePedido.map((pedido, indexPedido) => {
           if (
@@ -44,14 +49,15 @@ export class PedidoService {
             };
           }
         });
-
       });
-      const productosActualizarStonck =  createPedidoDto.detallePedido.map(pedido => {
-        return {
-          idInventario: pedido.idInventario,
-          cantidad: pedido.cantidad
-        }
-      });
+      const productosActualizarStonck = createPedidoDto.detallePedido.map(
+        (pedido) => {
+          return {
+            idInventario: pedido.idInventario,
+            cantidad: pedido.cantidad,
+          };
+        },
+      );
       if (noHayStock) {
         return noHayStock;
       }
@@ -141,32 +147,54 @@ export class PedidoService {
     }
   }
 
+  async findCocinero() {
+    return await this.pedidoRepository.find({
+      relations: {
+        detalleTicket: true,
+        mesa: true,
+      },
+      where: {
+        cocinado: false,
+      },
+      order: {
+        ticket: 'ASC',
+      },
+    });
+  }
+
   async calificarPedido(idPedido: number, calificacion: CalificacionDto) {
     try {
-      const pedido = await this.pedidoRepository.findOneBy({ticket: idPedido});
-      if(pedido) {
+      const pedido = await this.pedidoRepository.findOneBy({
+        ticket: idPedido,
+      });
+      if (pedido) {
         pedido.calificacion = calificacion.calificacion;
         pedido.sugerencia = calificacion.sugerencia;
         return await this.pedidoRepository.save(pedido);
       }
-    } catch(error) {
+    } catch (error) {
       this.handleBDerrors(error);
     }
   }
 
   async remove(id_pedido: number) {
     try {
-      const pedido: any = await this.pedidoRepository.find({where: {ticket: id_pedido}, relations: {
-        detalleTicket: true
-      }}).then(resp => {
-        return resp[0]
-      });
-      const eliminarProductos = pedido.detalleTicket.map(producto => {
+      const pedido: any = await this.pedidoRepository
+        .find({
+          where: { ticket: id_pedido },
+          relations: {
+            detalleTicket: true,
+          },
+        })
+        .then((resp) => {
+          return resp[0];
+        });
+      const eliminarProductos = pedido.detalleTicket.map((producto) => {
         return {
           cantidad: producto.cantidad,
-          idInventario : producto.idInventario
-        }
-      })
+          idInventario: producto.idInventario,
+        };
+      });
       await this.aumentarCantidadStonck(eliminarProductos);
       await this.pedidoRepository.delete({ ticket: id_pedido });
       return {
@@ -198,11 +226,18 @@ export class PedidoService {
       { mesa: { id: cambiarMesaDto.mesaNew } },
     );
   }
-
+  async cambiarPedidoListo(ticket: number) {
+    return await this.pedidoRepository.update(
+      { ticket: ticket },
+      { cocinado: true },
+    );
+  }
   async disminuirCantidadStonck(productos: any) {
     try {
       for (let i = 0; i < productos.length; i++) {
-        const producto = await this.inventarioRepository.findOneBy({id: productos[i].idInventario});
+        const producto = await this.inventarioRepository.findOneBy({
+          id: productos[i].idInventario,
+        });
         producto.existencia = producto.existencia - productos[i].cantidad;
         await this.inventarioRepository.save(producto);
       }
@@ -213,10 +248,12 @@ export class PedidoService {
   async aumentarCantidadStonck(productos: any) {
     try {
       for (let i = 0; i < productos.length; i++) {
-        const producto = await this.inventarioRepository.findOneBy({id: productos[i].idInventario});
-        if(producto){
-        producto.existencia = producto.existencia + productos[i].cantidad;
-        await this.inventarioRepository.save(producto);
+        const producto = await this.inventarioRepository.findOneBy({
+          id: productos[i].idInventario,
+        });
+        if (producto) {
+          producto.existencia = producto.existencia + productos[i].cantidad;
+          await this.inventarioRepository.save(producto);
         }
       }
     } catch (error) {

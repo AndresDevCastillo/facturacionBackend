@@ -64,11 +64,11 @@ export class EmpleadoService {
       .find({ where: { tipoCargo: Not(cargo), estado: true } });
   }
   async getCargos() {
-    const cargos = ['Mesero', 'Cajero', 'Admin', 'Engineersoft'];
+    const cargos = ['Mesero', 'Cajero', 'Admin', 'Engineersoft','Cocinero'];
     return cargos;
   }
   async getCargosEmpresa() {
-    const cargos = ['Mesero', 'Cajero'];
+    const cargos = ['Mesero', 'Cajero','Cocinero'];
     return cargos;
   }
   async findOne(cedula: number) {

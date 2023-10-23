@@ -25,10 +25,10 @@ export class Pedido {
   @JoinTable()
   detalleTicket: DetalleTicket[];
 
-  @Column({type: 'int', default: 0})
+  @Column({ type: 'int', default: 0 })
   calificacion: number;
 
-  @Column({type: 'varchar', default: ''})
+  @Column({ type: 'varchar', default: '' })
   sugerencia: string;
 
   @Column({ type: 'date' })
@@ -37,4 +37,6 @@ export class Pedido {
   @Column({ type: 'time' }) // Columna para la hora
   hora: string;
 
+  @Column({ type: 'boolean', default: false })
+  cocinado: boolean;
 }
