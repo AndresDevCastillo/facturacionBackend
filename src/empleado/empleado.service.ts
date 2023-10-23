@@ -101,7 +101,6 @@ export class EmpleadoService {
         const USEROLD = await this.empleadoRepository.findOneBy({cedula: empleadoDto.cedula, estado: true});
         await this.remove(empleadoDto.cedula);
         return await this.create(empleadoDto).then(async (resp:any) => {
-          console.log(resp);
           await this.usuarioRepository.update({empleado: {id: USEROLD.id}}, {empleado: {id: resp.raw.insertId}});
         });
 

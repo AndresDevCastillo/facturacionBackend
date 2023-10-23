@@ -19,7 +19,6 @@ export class InventarioService {
       const inventario: any = await this.inventarioRepository.find({
         relations: { producto: true },
       });
-      console.log(inventario);
       inventario.map((inventario: any) => {
         if (producto.producto == inventario.producto.id) {
           existeProducto = true;
@@ -41,7 +40,6 @@ export class InventarioService {
       return await this.inventarioRepository.find({
         where: {
           estado: true,
-          existencia: MoreThan(0)
         },
         relations: {
           producto: true,
@@ -55,7 +53,6 @@ export class InventarioService {
   async productosSinInvetario() {
     try {
       return this.inventarioCustomRepository.productosSinInventarios();
-
     } catch(error) {
        this.handleBDerrors(error);  
     }

@@ -18,7 +18,6 @@ export class inventarioCustomRepository extends Repository<Inventario> {
       const IdsInventario = await this.find({
         relations: { producto: true },
       }).then((inventario: any) => {
-        console.log(inventario);
         const idsProducto = inventario.map((inventario) => {
           return inventario.producto.id;
         });

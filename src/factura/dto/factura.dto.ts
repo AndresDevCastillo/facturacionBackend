@@ -52,6 +52,12 @@ export class FacturaDto {
   @IsNotEmpty()
   lugar: string;
 
+  @IsString()
+  comentario: string;
+
+  @IsNumber()
+  calificacion: number;
+
   @IsArray()
   detalleFactura: detalleFactura[];
 

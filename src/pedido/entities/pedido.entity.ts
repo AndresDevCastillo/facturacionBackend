@@ -25,6 +25,12 @@ export class Pedido {
   @JoinTable()
   detalleTicket: DetalleTicket[];
 
+  @Column({type: 'int', default: 0})
+  calificacion: number;
+
+  @Column({type: 'varchar', default: ''})
+  sugerencia: string;
+
   @Column({ type: 'date' })
   fecha: Date;
 

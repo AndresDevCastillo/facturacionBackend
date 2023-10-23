@@ -43,6 +43,12 @@ export class Factura {
   @Column({ type: 'varchar' })
   lugar: string;
 
+  @Column({type: 'varchar'})
+  comentario: string;
+
+  @Column({type: 'int', default: 0})
+  calificacion: number;
+
   @OneToMany(() => DetalleFactura, (detalleFactura) => detalleFactura.factura, {
     eager: true,
     onDelete: 'CASCADE',

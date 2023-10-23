@@ -6,6 +6,7 @@ import { In, Repository } from 'typeorm';
 import { DetalleTicket } from './entities/detalle-ticket.entity';
 import { CambiarMesaDto } from './dto/cambiarMesa.dto';
 import { Inventario } from 'src/inventario/entities/inventario.entity';
+import { CalificacionDto } from './dto/calificacion.dto';
 
 @Injectable()
 export class PedidoService {
@@ -30,18 +31,20 @@ export class PedidoService {
           producto: true,
         },
       });
+      
       inventarioProductos.map((inventario) => {
         createPedidoDto.detallePedido.map((pedido, indexPedido) => {
           if (
             inventario.id == pedido.idInventario &&
-            pedido.cantidad > inventario.cantidad
+            pedido.cantidad > inventario.existencia
           ) {
             noHayStock = {
-              noHayStock: `No hay ${inventario.producto.nombre} - Existencia: ${inventario.cantidad}`,
+              noHayStock: `No hay ${inventario.producto.nombre} - Existencia: ${inventario.existencia}`,
               indice: indexPedido,
             };
           }
         });
+
       });
       const productosActualizarStonck =  createPedidoDto.detallePedido.map(pedido => {
         return {
@@ -49,10 +52,10 @@ export class PedidoService {
           cantidad: pedido.cantidad
         }
       });
-      await this.disminuirCantidadStonck(productosActualizarStonck);
       if (noHayStock) {
         return noHayStock;
       }
+      await this.disminuirCantidadStonck(productosActualizarStonck);
       const colombiaTimezone = 'America/Bogota';
       const now = new Date();
 
@@ -138,8 +141,17 @@ export class PedidoService {
     }
   }
 
-  async update(updatePedidoDto: UpdatePedidoDto) {
-    return `This action updates a # ${updatePedidoDto} pedido`;
+  async calificarPedido(idPedido: number, calificacion: CalificacionDto) {
+    try {
+      const pedido = await this.pedidoRepository.findOneBy({ticket: idPedido});
+      if(pedido) {
+        pedido.calificacion = calificacion.calificacion;
+        pedido.sugerencia = calificacion.sugerencia;
+        return await this.pedidoRepository.save(pedido);
+      }
+    } catch(error) {
+      this.handleBDerrors(error);
+    }
   }
 
   async remove(id_pedido: number) {
@@ -202,8 +214,10 @@ export class PedidoService {
     try {
       for (let i = 0; i < productos.length; i++) {
         const producto = await this.inventarioRepository.findOneBy({id: productos[i].idInventario});
+        if(producto){
         producto.existencia = producto.existencia + productos[i].cantidad;
         await this.inventarioRepository.save(producto);
+        }
       }
     } catch (error) {
       this.handleBDerrors(error);
