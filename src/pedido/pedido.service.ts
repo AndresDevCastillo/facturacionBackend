@@ -6,7 +6,6 @@ import { In, Repository } from 'typeorm';
 import { DetalleTicket } from './entities/detalle-ticket.entity';
 import { CambiarMesaDto } from './dto/cambiarMesa.dto';
 import { Inventario } from 'src/inventario/entities/inventario.entity';
-import { inventarioCustomRepository } from 'src/inventario/entities/inventario.repository';
 
 @Injectable()
 export class PedidoService {
@@ -145,6 +144,18 @@ export class PedidoService {
 
   async remove(id_pedido: number) {
     try {
+      const pedido: any = await this.pedidoRepository.find({where: {ticket: id_pedido}, relations: {
+        detalleTicket: true
+      }}).then(resp => {
+        return resp[0]
+      });
+      const eliminarProductos = pedido.detalleTicket.map(producto => {
+        return {
+          cantidad: producto.cantidad,
+          idInventario : producto.idInventario
+        }
+      })
+      await this.aumentarCantidadStonck(eliminarProductos);
       await this.pedidoRepository.delete({ ticket: id_pedido });
       return {
         msg: 'Registros eliminados, detalle de pedido y el pedido',
@@ -181,6 +192,17 @@ export class PedidoService {
       for (let i = 0; i < productos.length; i++) {
         const producto = await this.inventarioRepository.findOneBy({id: productos[i].idInventario});
         producto.existencia = producto.existencia - productos[i].cantidad;
+        await this.inventarioRepository.save(producto);
+      }
+    } catch (error) {
+      this.handleBDerrors(error);
+    }
+  }
+  async aumentarCantidadStonck(productos: any) {
+    try {
+      for (let i = 0; i < productos.length; i++) {
+        const producto = await this.inventarioRepository.findOneBy({id: productos[i].idInventario});
+        producto.existencia = producto.existencia + productos[i].cantidad;
         await this.inventarioRepository.save(producto);
       }
     } catch (error) {
