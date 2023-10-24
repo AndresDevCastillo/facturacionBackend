@@ -7,7 +7,7 @@ import {
 import { CreateEmpleadoDto, UpdateEmpleadoDto } from './dto/empleado.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Empleado } from './entities/empleado.entity';
-import { DataSource, Repository, Not } from 'typeorm';
+import { DataSource, Repository, Not, In } from 'typeorm';
 import { Usuario } from 'src/usuario/entities/usuario.entity';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class EmpleadoService {
     @InjectRepository(Empleado)
     private empleadoRepository: Repository<Empleado>,
     @InjectRepository(Usuario)
-    private usuarioRepository: Repository<Usuario>
+    private usuarioRepository: Repository<Usuario>,
   ) {}
 
   async create(empleado: CreateEmpleadoDto) {
@@ -63,12 +63,37 @@ export class EmpleadoService {
       .getRepository(Empleado)
       .find({ where: { tipoCargo: Not(cargo), estado: true } });
   }
+  async getUsuariosByEmpresa(cargo = 'Engineersoft') {
+    return await this.dataSource
+      .getRepository(Usuario)
+      .createQueryBuilder()
+      .innerJoinAndSelect('Usuario.empleado', 'empleado')
+      .where('empleado.tipoCargo != :cargo AND empleado.estado = :estado', {
+        cargo: cargo,
+        estado: true,
+      })
+      .getMany();
+  }
+  async getEmpleadosSinUsuario() {
+    const empleadoUserId = await this.getUsuariosByEmpresa();
+    const empleadosId = empleadoUserId.map((usuario) => {
+      return usuario.empleado.id;
+    });
+    return await this.dataSource.getRepository(Empleado).find({
+      where: {
+        id: Not(In(empleadosId)),
+        estado: true,
+        tipoCargo: Not('Engineersoft'),
+      },
+    });
+  }
+
   async getCargos() {
-    const cargos = ['Mesero', 'Cajero', 'Admin', 'Engineersoft','Cocinero'];
+    const cargos = ['Mesero', 'Cajero', 'Admin', 'Engineersoft', 'Cocinero'];
     return cargos;
   }
   async getCargosEmpresa() {
-    const cargos = ['Mesero', 'Cajero','Cocinero'];
+    const cargos = ['Mesero', 'Cajero', 'Cocinero'];
     return cargos;
   }
   async findOne(cedula: number) {
@@ -98,12 +123,17 @@ export class EmpleadoService {
     try {
       const existe = await this.checkIfExist(empleadoDto.cedula);
       if (existe) {
-        const USEROLD = await this.empleadoRepository.findOneBy({cedula: empleadoDto.cedula, estado: true});
-        await this.remove(empleadoDto.cedula);
-        return await this.create(empleadoDto).then(async (resp:any) => {
-          await this.usuarioRepository.update({empleado: {id: USEROLD.id}}, {empleado: {id: resp.raw.insertId}});
+        const USEROLD = await this.empleadoRepository.findOneBy({
+          cedula: empleadoDto.cedula,
+          estado: true,
         });
-
+        await this.remove(empleadoDto.cedula);
+        return await this.create(empleadoDto).then(async (resp: any) => {
+          await this.usuarioRepository.update(
+            { empleado: { id: USEROLD.id } },
+            { empleado: { id: resp.raw.insertId } },
+          );
+        });
       }
       return new NotFoundException({
         Message: 'No se encontro el cliente',
@@ -118,12 +148,11 @@ export class EmpleadoService {
     try {
       const existe = await this.checkIfExist(cedula);
       if (existe) {
-        return this.empleadoRepository.update(
-          { cedula: cedula },
-          { estado: false },
-        ).then(()=> {
-          return cedula;
-        });
+        return this.empleadoRepository
+          .update({ cedula: cedula }, { estado: false })
+          .then(() => {
+            return cedula;
+          });
       }
       return new NotFoundException({
         Message: 'La cedula no existe',
@@ -133,16 +162,20 @@ export class EmpleadoService {
       this.handleBDerrors(error);
     }
   }
-   async removeEnserio(cedula: number) {
+  async removeEnserio(cedula: number) {
     try {
       const existe = await this.checkIfExist(cedula);
       if (existe) {
-        
-        const EMPLEADO = await this.empleadoRepository.findOneBy({cedula: cedula, estado: true});
-        const USER = await this.usuarioRepository.findOneBy({empleado: {id: EMPLEADO.id}});
-         if(USER){
+        const EMPLEADO = await this.empleadoRepository.findOneBy({
+          cedula: cedula,
+          estado: true,
+        });
+        const USER = await this.usuarioRepository.findOneBy({
+          empleado: { id: EMPLEADO.id },
+        });
+        if (USER) {
           await this.usuarioRepository.delete(USER.id);
-         }
+        }
         return await this.empleadoRepository.update(
           { cedula: cedula },
           { estado: false },
